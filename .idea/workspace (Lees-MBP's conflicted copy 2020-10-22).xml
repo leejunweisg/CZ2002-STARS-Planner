@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="454f086a-6f99-494b-a635-988e8d003bb7" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1jB4cWhSKc3VMWshLDHm5dpZYkW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="454f086a-6f99-494b-a635-988e8d003bb7" name="Default Changelist" comment="" />
+      <created>1603264232171</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1603264232171</updated>
+      <workItem from="1603264233324" duration="5388000" />
+      <workItem from="1603300289395" duration="25000" />
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="299" y="118" key="#Project_Structure" timestamp="1603264240737">
+      <screen x="0" y="23" width="1624" height="1027" />
+    </state>
+    <state x="299" y="118" key="#Project_Structure/0.23.1624.1027@0.23.1624.1027" timestamp="1603264240737" />
+    <state x="624" y="227" key="#com.intellij.ide.util.MemberChooser" timestamp="1603266361073">
+      <screen x="0" y="23" width="1624" height="1027" />
+    </state>
+    <state x="624" y="227" key="#com.intellij.ide.util.MemberChooser/0.23.1624.1027@0.23.1624.1027" timestamp="1603266361073" />
+  </component>
+</project>
