@@ -104,6 +104,7 @@ public class FileManager {
 
             case 2:
                 ArrayList<Student> students = new ArrayList<>();
+                students.add(new Student("JLEE254", "password123", "Lee Jun Wei", Gender.M, "Signapore", LocalDate.of(1997, 5, 15), "U1922896C", LocalDate.of(2019, 1, 1) ));
                 write_student(students);
                 break;
 

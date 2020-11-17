@@ -1,8 +1,5 @@
 package app;
 
-//hello world!
-//fuck!!!
-//you!!
 import controllers.LoginController;
 import controllers.StaffController;
 import controllers.StudentController;
@@ -98,6 +95,8 @@ public class STARSPlanner {
             username = sc.nextLine().toUpperCase();
             if (username.isEmpty())
                 System.out.println("You need to enter something!");
+            else if (staff_controller.existUsername(username))
+                System.out.println("Username already exists!");
             else
                 break;
         }
@@ -166,6 +165,8 @@ public class STARSPlanner {
 
             if (!matcher.matches())
                 System.out.println("Invalid matric number!");
+            else if(staff_controller.existMatricNumber(matric_number))
+                System.out.println("Student was not added, matriculation number already exists!");
             else
                 break;
         }
@@ -205,6 +206,8 @@ public class STARSPlanner {
 
             if (!matcher.matches())
                 System.out.println("Invalid matric number!");
+            else if(staff_controller.existMatricNumber(matric_number))
+                System.out.println("Student was not added, matriculation number already exists!");
             else
                 break;
         }
@@ -236,7 +239,7 @@ public class STARSPlanner {
         }
 
         // set period, and print result
-        // TODO editStudentAccess()
+        System.out.println(staff_controller.setStudentAccess(matric_number, startPeriod, endPeriod));
     }
 
     static void createCourse(){

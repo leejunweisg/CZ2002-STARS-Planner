@@ -7,6 +7,7 @@ import model.Staff;
 import model.Student;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -26,14 +27,6 @@ public class StaffController {
         studentList = fm.read_student();
         staffList = fm.read_staff();
 
-        // check if username exists
-        if (existUsername(username))
-            return "Student was not added, username already exists!";
-
-        // check if matric_number exists
-        if (existMatricNumber(matric_number))
-            return "Student was not added, matriculation number already exists!";
-
         // convert variables to required types
         Gender genderEnum = Gender.valueOf(gender);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
@@ -49,7 +42,7 @@ public class StaffController {
         return "Student added successfully!";
     }
 
-    private boolean existUsername(String username){
+    public boolean existUsername(String username){
         for (Student stud: studentList)
             if (stud.getUsername().equals(username))
                 return true;
@@ -60,11 +53,53 @@ public class StaffController {
         return false;
     }
 
-    private boolean existMatricNumber(String matric_number){
+    public boolean existMatricNumber(String matric_number){
         for (Student stud: studentList)
             if (stud.getMatric_number().equals(matric_number))
                 return true;
 
         return false;
+    }
+
+    public String setStudentAccess(String matric_number, String startPeriod,String endPeriod){
+        // read latest students from file
+        fm.read_student();
+
+        // parse dates
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+        LocalDateTime start = LocalDateTime.parse(startPeriod, formatter);
+        LocalDateTime end = LocalDateTime.parse(endPeriod, formatter);
+
+        // get the student
+        Student stud = getStudentByMatric(matric_number);
+
+        // if not null, set the period, if not, return error message
+        if (stud!=null){
+            // set period
+            stud.setStartPeriod(start);
+            stud.setEndPeriod(end);
+
+            // write changes to file
+            fm.write_student(studentList);
+
+            // return success message
+            return "Access period successfully set!";
+
+        }else
+            return "Not successful! The student was not found.";
+    }
+
+    private Student getStudentByMatric(String matric){
+        for (Student stud: studentList)
+            if (stud.getMatric_number().equals(matric))
+                return stud;
+        return null;
+    }
+
+    private Student getStudentByUsername(String username){
+        for (Student stud: studentList)
+            if (stud.getUsername().equals(username))
+                return stud;
+        return null;
     }
 }
