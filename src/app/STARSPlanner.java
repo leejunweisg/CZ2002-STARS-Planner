@@ -58,9 +58,9 @@ public class STARSPlanner {
             System.out.printf("\n[Admin Menu] Logged in as: %s\n", username);
             System.out.println("1. Add a student");
             System.out.println("2. Edit student access period");
-            System.out.println("3. Add a course");
+            System.out.println("3. Create new course");
             System.out.println("4. Update a course");
-            System.out.println("5. Check available slot for an index number");
+            System.out.println("5. Check available slot for an index number in a Course");
             System.out.println("6. Print Student list by index number");
             System.out.println("7. Print student list by course");
             System.out.println("0. Log out");
@@ -70,6 +70,12 @@ public class STARSPlanner {
 
             switch(choice){
                 case 1 -> addStudent();
+                case 2 -> editStudentAccess();
+                case 3 -> createCourse();
+                case 4 -> updateCourse();
+                case 5 -> checkIndexSlots();
+                case 6 -> printByIndex();
+                case 7 -> printByCourse();
             }
         }while(choice !=0);
     }
@@ -179,6 +185,107 @@ public class STARSPlanner {
 
         // call method in STARSPlanner to add student, print result
         System.out.println(staff_controller.addStudent(username, password, fullname, gender, nationality, dob, matric_number, matriculation_date));
+    }
+
+    private void editStudentAccess(){
+        String matric_number;
+        String startPeriod;
+        String endPeriod;
+
+        System.out.println("\n[Edit student access period]");
+
+        // matric_number
+        while (true){
+            System.out.print("Enter matric number of student: ");
+            matric_number = sc.nextLine().toUpperCase();
+
+            // use regex to check if matric number entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z][0-9]{7}[A-Z]$");
+            Matcher matcher = pattern.matcher(matric_number);
+
+            if (!matcher.matches())
+                System.out.println("Invalid matric number!");
+            else
+                break;
+        }
+
+        // start period
+        while (true){
+            System.out.print("Enter start of period (dd/mm/yyyy hh:mm): ");
+            startPeriod = sc.nextLine();
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+                LocalDate.parse(startPeriod, formatter); //use LocalDate.parse to check if date format is valid
+                break;
+            }catch(Exception e){
+                System.out.println("Invalid format!");
+            }
+        }
+
+        // end date time
+        while (true){
+            System.out.print("Enter end of period (dd/mm/yyyy hh:mm): ");
+            endPeriod = sc.nextLine();
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+                LocalDate.parse(endPeriod, formatter); //use LocalDate.parse to check if date format is valid
+                break;
+            }catch(Exception e){
+                System.out.println("Invalid format!");
+            }
+        }
+
+        // set period, and print result
+        // TODO editStudentAccess()
+    }
+
+    static void createCourse(){
+        System.out.println("\n[Create Course]");
+        //TODO addCourse()
+        //TODO
+    }
+
+    private void updateCourse(){
+        //TODO updateCourse()
+        int choice=0;
+        do{
+            System.out.println("\n[Update Course]");
+            System.out.println("1. Create Index for a Course");
+            System.out.println("2. Remove Index from a Course");
+            System.out.println("0. Back");
+
+            System.out.print("\nEnter choice: ");
+            choice = Integer.parseInt(sc.nextLine());
+
+            switch(choice){
+                case 1 -> createIndex();
+                case 2 -> removeIndex();
+            }
+        }while(choice !=0);
+    }
+
+    private void createIndex(){
+        System.out.println("\n[Create Index]");
+        //call staff controller
+    }
+
+    private void removeIndex(){
+        System.out.println("\n[Remove Index]");
+        //call staff controller
+    }
+
+    private void checkIndexSlots(){
+        System.out.println("\n[Check available slot for an index number]");
+        //TODO checkIndexSlots()
+    }
+
+    private void printByIndex(){
+        System.out.println("\n[Print Student list by index number]");
+        //TODO printByIndex()
+    }
+
+    private void printByCourse(){
+        //TODO check printByCourse() after courses enrolment is implemented
     }
 
     private void studentMenu(String username){
