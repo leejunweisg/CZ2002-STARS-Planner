@@ -11,6 +11,9 @@ public class Course implements Serializable {
     // holds a list of indexes that this course has
     private ArrayList<Index> indexes;
 
+    public Course(){
+
+    }
     public Course(String course_code, String course_name, School school) {
         this.course_code = course_code;
         this.course_name = course_name;
@@ -49,4 +52,5 @@ public class Course implements Serializable {
     public void setIndexes(ArrayList<Index> indexes) {
         this.indexes = indexes;
     }
+
 }

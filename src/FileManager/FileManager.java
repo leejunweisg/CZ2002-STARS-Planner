@@ -4,6 +4,8 @@ import model.Course;
 import model.Gender;
 import model.Staff;
 import model.Student;
+import model.School;
+import model.Index;
 
 import java.io.*;
 import java.time.LocalDate;
@@ -110,10 +112,39 @@ public class FileManager {
 
             case 3:
                 ArrayList<Course> course = new ArrayList<>();
+                course.add(new Course("CZ2001", "Algorithm", School.SCSE));
                 write_course(course);
                 break;
+            case 4:
+                ArrayList<Index> index = new ArrayList<>();
+
         }
         System.out.println("Clean slate executed!");
+    }
+
+    public ArrayList<Index> read_index(){
+        ArrayList<Index> indexList = new ArrayList<>();
+        try{
+            FileInputStream fis = new FileInputStream("index.dat");
+            ObjectInputStream in = new ObjectInputStream(fis);
+            indexList = (ArrayList<Index>) in.readObject();
+            in.close();
+        }catch (IOException | ClassNotFoundException ex){
+            System.out.println("Failed to load courses.");
+            force_write(4);
+        }
+        return indexList;
+    }
+
+    public void write_array(ArrayList<Index> indexList){
+        try {
+            FileOutputStream fos = new FileOutputStream("index.dat");
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(indexList);
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
 
 }

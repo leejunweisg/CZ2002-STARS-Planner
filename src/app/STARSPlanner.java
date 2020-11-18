@@ -242,10 +242,50 @@ public class STARSPlanner {
         System.out.println(staff_controller.setStudentAccess(matric_number, startPeriod, endPeriod));
     }
 
-    static void createCourse(){
+    private void createCourse(){
+
         System.out.println("\n[Create Course]");
-        //TODO addCourse()
-        //TODO
+
+        String courseCode, courseName, courseSchool;
+
+        while(true){
+            try{
+                System.out.println("Enter New Course Code");
+                courseCode = sc.nextLine();
+
+                if(courseCode.toLowerCase().equals("exit")){
+                    System.out.println("exit(). press enter to go back to main menu");
+                    sc.nextLine();
+                    return;
+                }
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+        while(true){
+            try{
+                System.out.println("Enter New Course Name ");
+                courseName = sc.nextLine();
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+        while(true){
+            try{
+                System.out.println("Enter Course School");
+                courseSchool = sc.nextLine();
+
+                //TODO School enum validation
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+        System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool));
+
+
     }
 
     private void updateCourse(){
@@ -268,8 +308,44 @@ public class STARSPlanner {
     }
 
     private void createIndex(){
+
         System.out.println("\n[Create Index]");
         //call staff controller
+        String courseCode, indexNumber, maxCapacity;
+
+        while(true) {
+            try {
+                System.out.println("Enter Course Code: ");
+                //TODO Check if course code exist
+                courseCode = sc.nextLine();
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+        while(true) {
+            try {
+                System.out.println("Enter Index Number: ");
+                //TODO Check if course code exist
+                indexNumber = sc.nextLine();
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+        while(true) {
+            try {
+                System.out.println("Enter Course maximum Capacity: ");
+                //TODO Check if course code exist
+                maxCapacity = sc.nextLine();
+                break;
+            }catch(Exception e){
+                System.out.println("Error");
+            }
+        }
+
+        System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
+
     }
 
     private void removeIndex(){

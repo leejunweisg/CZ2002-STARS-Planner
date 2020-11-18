@@ -1,6 +1,7 @@
 package model;
 
-enum School {
+public enum School {
     NBS,
     SCSE
+
 }

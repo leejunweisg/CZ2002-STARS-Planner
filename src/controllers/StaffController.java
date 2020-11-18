@@ -1,15 +1,14 @@
 package controllers;
 
 import FileManager.FileManager;
-import model.Course;
-import model.Gender;
-import model.Staff;
-import model.Student;
+import model.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class StaffController {
 
@@ -17,6 +16,9 @@ public class StaffController {
     private ArrayList<Staff> staffList;
     private ArrayList<Student> studentList;
     private ArrayList<Course> courseList;
+
+    //Added by edan
+    private ArrayList<Index> indexList;
 
     public StaffController() {
         fm = new FileManager();
@@ -96,10 +98,55 @@ public class StaffController {
         return null;
     }
 
+
+
+
     private Student getStudentByUsername(String username){
         for (Student stud: studentList)
             if (stud.getUsername().equals(username))
                 return stud;
         return null;
     }
+
+//--------------------------Create and Edit Courses-------------------------------------------
+    public String createCourse(String courseCode, String courseName, String courseSchool){
+        courseList = fm.read_course();
+
+        School school = School.valueOf(courseSchool);
+        courseList.add(new Course(courseCode, courseName, school));
+
+        fm.write_course(courseList);
+
+        return "Course Added Successfully!";
+
+    }
+
+    private Course getCourseCode(String courseCode){
+        for(Course course: courseList)
+        {
+            if(course.getCourse_code().equals(courseCode))
+                return course;
+        }
+        return null;
+    }
+
+    public String createIndex(String courseCode, String indexNum, String maxCap) {
+        indexList = fm.read_index();
+        Course course = getCourseCode(courseCode);
+
+        int indexNumber = Integer.parseInt(indexNum);
+        int maxCapacity = Integer.parseInt(maxCap);
+        if(course!=null) {
+            indexList.add(new Index(course, indexNumber, maxCapacity));
+
+            fm.write_array(indexList);
+            return "Success!";
+        }
+        else{
+            return "failed";
+        }
+
+
+    }
+
 }
