@@ -71,7 +71,7 @@ public class FileManager {
     public ArrayList<Course> read_course(){
         ArrayList<Course> courseList = new ArrayList<>();
         try {
-            FileInputStream fis = new FileInputStream("staff.dat");
+            FileInputStream fis = new FileInputStream("course.dat");
             ObjectInputStream in = new ObjectInputStream(fis);
             courseList = (ArrayList<Course>) in.readObject();
             in.close();

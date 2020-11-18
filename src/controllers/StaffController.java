@@ -131,22 +131,22 @@ public class StaffController {
     }
 
     public String createIndex(String courseCode, String indexNum, String maxCap) {
-        indexList = fm.read_index();
+        //indexList = fm.read_index();
+        courseList =fm.read_course();
         Course course = getCourseCode(courseCode);
 
         int indexNumber = Integer.parseInt(indexNum);
         int maxCapacity = Integer.parseInt(maxCap);
         if(course!=null) {
+            ArrayList<Index> indexList = course.getIndexes(); // gives current array list of indexes
             indexList.add(new Index(course, indexNumber, maxCapacity));
-
-            fm.write_array(indexList);
+            course.setIndexes(indexList);
+            fm.write_course(courseList);
             return "Success!";
         }
         else{
             return "failed";
         }
-
-
     }
 
 }

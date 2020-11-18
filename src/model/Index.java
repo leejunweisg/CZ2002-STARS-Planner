@@ -1,9 +1,10 @@
 package model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Index {
+public class Index implements Serializable {
     //Declaration
     private Course course;
     private int index_number;
@@ -12,6 +13,8 @@ public class Index {
     private ArrayList<Student> enrolledStudents;
     private ArrayList<Student> waitlistedStudents;
 
+
+    //private HashMap<sessionType, ArrayList<TimeSlot>> sessions;
 
     private ArrayList<TimeSlot> lectures;
     private ArrayList<TimeSlot> tutorials;

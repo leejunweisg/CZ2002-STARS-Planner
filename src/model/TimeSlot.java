@@ -1,6 +1,8 @@
 package model;
 
-public class TimeSlot {
+import java.io.Serializable;
+
+public class TimeSlot implements Serializable {
     private int dayOfWeek;
     private String location;
     private int startTime;
