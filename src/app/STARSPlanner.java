@@ -276,7 +276,8 @@ public class STARSPlanner {
             try{
                 System.out.println("Enter Course School");
                 courseSchool = sc.nextLine();
-
+                if (!staff_controller.existSchool(courseSchool))
+                    System.out.println("error");
                 //TODO School enum validation
                 break;
             }catch(Exception e){

@@ -98,7 +98,14 @@ public class StaffController {
         return null;
     }
 
-
+    public boolean existSchool(String school){
+        try{
+            School.valueOf(school);
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
 
 
     private Student getStudentByUsername(String username){
