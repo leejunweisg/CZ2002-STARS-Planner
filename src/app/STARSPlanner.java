@@ -250,7 +250,7 @@ public class STARSPlanner {
 
         while(true){
             try{
-                System.out.println("Enter New Course Code");
+                System.out.print("Enter New Course Code: ");
                 courseCode = sc.nextLine();
 
                 if(courseCode.toLowerCase().equals("exit")){
@@ -265,7 +265,7 @@ public class STARSPlanner {
         }
         while(true){
             try{
-                System.out.println("Enter New Course Name ");
+                System.out.print("Enter New Course Name: ");
                 courseName = sc.nextLine();
                 break;
             }catch(Exception e){
@@ -274,7 +274,7 @@ public class STARSPlanner {
         }
         while(true){
             try{
-                System.out.println("Enter Course School");
+                System.out.print("Enter School: ");
                 courseSchool = sc.nextLine();
                 if (!staff_controller.existSchool(courseSchool))
                     System.out.println("error");
@@ -356,12 +356,77 @@ public class STARSPlanner {
 
     private void checkIndexSlots(){
         System.out.println("\n[Check available slot for an index number]");
-        //TODO checkIndexSlots()
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!staff_controller.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number (does not mean it exists)
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+            break;
+        }
+
+        System.out.println(staff_controller.checkIndexSlot(courseCode,indexNumber));
     }
 
     private void printByIndex(){
         System.out.println("\n[Print Student list by index number]");
-        //TODO printByIndex()
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!staff_controller.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number (does not mean it exists)
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+            break;
+        }
+
+        System.out.println(staff_controller.printByIndex(courseCode, indexNumber));
+
     }
 
     private void printByCourse(){
