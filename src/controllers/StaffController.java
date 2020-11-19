@@ -149,11 +149,6 @@ public class StaffController {
 
         // retrieve the course
         Course c = getCourseByCode(courseCode);
-        ArrayList<Index> indexes = c.getIndexes();
-
-        // if course does not have any index
-        if (indexes == null)
-            return "This course has no indexes!";
 
         // find the index
         for (Index i: c.getIndexes()) {
@@ -166,8 +161,45 @@ public class StaffController {
         return "The index number you entered was not found in the course.";
     }
 
-    public String printByIndex(String courseCode, int indexNumber){
-        return "";
+    public String printByIndex(String courseCode, int indexNumber) {
+        // read latest courses from file
+        courseList = fm.read_course();
+
+        // retrieve the course
+        Course c = getCourseByCode(courseCode);
+
+        // if course does not have any index
+        if (c.getIndexes() == null)
+            return "This course has no indexes!";
+
+        // find the index
+        StringBuilder sb;
+        for (Index i : c.getIndexes()) {
+            if (i.getIndex_number() == indexNumber) {
+                sb = new StringBuilder("All registered students:\n");
+
+                for (Student stud : i.getEnrolledStudents())
+                    sb.append(stud).append("\n");
+                return sb.toString();
+            }
+        }
+        return "The index number you entered was not found in the course.";
+    }
+
+    public String printByCourse(String courseCode){
+        // read latest courses from file
+        courseList = fm.read_course();
+
+        // retrieve the course
+        Course c = getCourseByCode(courseCode);
+
+        StringBuilder sb;
+        sb = new StringBuilder("All registered students:\n");
+        for (Index i : c.getIndexes()) {
+            for (Student stud : i.getEnrolledStudents())
+                sb.append(String.format("%d \t %s\n",  i.getIndex_number(), stud));
+        }
+        return sb.toString();
     }
 
     // internal class helper methods

@@ -73,4 +73,9 @@ public class Student extends User{
     public void setWaitlisted(ArrayList<Index> waitlisted) {
         this.waitlisted = waitlisted;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%9s \t %15s \t %1s %10s", matric_number, getFullname(), getGender(), getNationality());
+    }
 }

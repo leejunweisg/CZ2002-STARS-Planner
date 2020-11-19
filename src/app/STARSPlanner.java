@@ -54,7 +54,7 @@ public class STARSPlanner {
         do{
             System.out.printf("\n[Admin Menu] Logged in as: %s\n", username);
             System.out.println("1. Add a student");
-            System.out.println("2. Edit student access period");
+            System.out.println("2. Set access period for a student");
             System.out.println("3. Create new course");
             System.out.println("4. Update a course");
             System.out.println("5. Check available slot for an index number in a Course");
@@ -63,7 +63,11 @@ public class STARSPlanner {
             System.out.println("0. Log out");
 
             System.out.print("\nEnter choice: ");
-            choice = Integer.parseInt(sc.nextLine());
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+            }catch(Exception e){
+                continue;
+            }
 
             switch(choice){
                 case 1 -> addStudent();
@@ -430,11 +434,32 @@ public class STARSPlanner {
     }
 
     private void printByCourse(){
-        //TODO check printByCourse() after courses enrolment is implemented
+        System.out.println("\n[Print Student list by Course]");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!staff_controller.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+
+        System.out.println(staff_controller.printByCourse(courseCode));
     }
 
     private void studentMenu(String username){
         System.out.println("\nHi student! Logged in as: " + username);
+        // for quick test only, no checks done
+        student_controller.registerForCourse("JLEE254", "CZ2001", 101050);
     }
 
 }
