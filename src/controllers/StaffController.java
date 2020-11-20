@@ -15,45 +15,6 @@ public class StaffController {
         this.dc = dc;
     }
 
-    // validation methods to be used from the UI
-    public boolean existUsername(String username){
-        // read latest students from file
-        for (Student stud: dc.getStudentList())
-            if (stud.getUsername().equals(username))
-                return true;
-        for (Staff s: dc.getStaffList())
-            if (s.getUsername().equals(username))
-                return true;
-
-        return false;
-    }
-
-    public boolean existMatricNumber(String matric_number){
-        // read latest students from file
-        for (Student stud: dc.getStudentList())
-            if (stud.getMatric_number().equals(matric_number))
-                return true;
-
-        return false;
-    }
-
-    public boolean existSchool(String school){
-        try{
-            School.valueOf(school);
-        }catch(Exception e){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean existCourse(String courseCode){
-        for (Course c: dc.getCourseList()){
-            if (c.getCourse_code().equals(courseCode.toUpperCase()))
-                return true;
-        }
-        return false;
-    }
-
     // methods for menu tasks
     public String addStudent(String username, String passwordPlain, String fullname, String gender, String nationality, String dob, String matric_number, String matriculation_date){
         // convert variables to required types
@@ -77,7 +38,7 @@ public class StaffController {
         LocalDateTime end = LocalDateTime.parse(endPeriod, formatter);
 
         // get the student
-        Student stud = getStudentByMatric(matric_number);
+        Student stud = dc.getStudentByMatric(matric_number);
 
         // if not null, set the period, if not, return error message
         if (stud!=null){
@@ -127,7 +88,7 @@ public class StaffController {
         // read latest courses from file
 
         // retrieve the course
-        Course c = getCourseByCode(courseCode);
+        Course c = dc.getCourseByCode(courseCode);
 
         // find the index
         if (c != null) {
@@ -144,7 +105,7 @@ public class StaffController {
 
     public String printByIndex(String courseCode, int indexNumber) {
         // retrieve the course
-        Course c = getCourseByCode(courseCode);
+        Course c = dc.getCourseByCode(courseCode);
 
         // if course does not have any index
         if (c != null && c.getIndexes() == null)
@@ -169,7 +130,7 @@ public class StaffController {
     public String printByCourse(String courseCode){
 
         // retrieve the course
-        Course c = getCourseByCode(courseCode);
+        Course c = dc.getCourseByCode(courseCode);
 
         StringBuilder sb;
         sb = new StringBuilder("All registered students:\n");
@@ -182,21 +143,5 @@ public class StaffController {
         return sb.toString();
     }
 
-    // internal class helper methods
-    private Student getStudentByMatric(String matric){
-        for (Student stud: dc.getStudentList())
-            if (stud.getMatric_number().equals(matric))
-                return stud;
-        return null;
-    }
-
-    private Course getCourseByCode(String courseCode){
-        for(Course course: dc.getCourseList())
-        {
-            if(course.getCourse_code().equals(courseCode))
-                return course;
-        }
-        return null;
-    }
 
 }

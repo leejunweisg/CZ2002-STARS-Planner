@@ -56,4 +56,83 @@ public class DataContainer implements Serializable {
         courseList.add(c1);
         courseList.add(c2);
     }
+
+    // validation methods to be used from the UI
+    public boolean existUsername(String username){
+        // read latest students from file
+        for (Student stud: studentList)
+            if (stud.getUsername().equals(username))
+                return true;
+        for (Staff s: staffList)
+            if (s.getUsername().equals(username))
+                return true;
+
+        return false;
+    }
+
+    public boolean existMatricNumber(String matric_number){
+        // read latest students from file
+        for (Student stud: studentList)
+            if (stud.getMatric_number().equals(matric_number))
+                return true;
+
+        return false;
+    }
+
+    public boolean existSchool(String school){
+        try{
+            School.valueOf(school);
+        }catch(Exception e){
+            return false;
+        }
+        return true;
+    }
+
+    public boolean existCourse(String courseCode){
+        for (Course c: courseList){
+            if (c.getCourse_code().equals(courseCode.toUpperCase()))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean existIndexInCourse(String courseCode, int indexNumber){
+        Course c = getCourseByCode(courseCode);
+        for (Index i:c.getIndexes())
+            if (i.getIndex_number() == indexNumber)
+                return true;
+        return false;
+    }
+
+    // helper methods
+    public Student getStudentByMatric(String matric){
+        for (Student stud: studentList)
+            if (stud.getMatric_number().equals(matric))
+                return stud;
+        return null;
+    }
+
+    public Course getCourseByCode(String courseCode){
+        for(Course course: courseList)
+        {
+            if(course.getCourse_code().equals(courseCode))
+                return course;
+        }
+        return null;
+    }
+
+    public Index getCourseIndex(Course c, int indexNumber){
+        for (Index i: c.getIndexes()){
+            if (i.getIndex_number() == indexNumber)
+                return i;
+        }
+        return null;
+    }
+
+    public Student getStudentByUsername(String username){
+        for (Student stud: studentList)
+            if (stud.getUsername().equals(username))
+                return stud;
+        return null;
+    }
 }

@@ -15,8 +15,8 @@ public class StudentController {
 
     public String registerForCourse(String username, String courseCode, int indexNumber){
         System.out.println("asd");
-        Student stud = getStudentByUsername(username);
-        Course c = getCourseByCode(courseCode);
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
 
         // Check if student already registered for this course
         for (Index i: stud.getRegistered())
@@ -50,72 +50,45 @@ public class StudentController {
         return "The index number you entered was not found in the course.";
     }
 
-//    public String dropRegisteredCourse(String username, String courseCode, int indexNumber){
-//        courseList = fm.read_course();
-//        studentList = fm.read_student();
-//
-//        Student stud = getStudentByUsername(username);
-//        Course c = getCourseByCode(courseCode);
-//
-//        // remove index from student
-//        boolean registered = false;
-//        for (Index i: stud.getRegistered()){
-//            if (i.getIndex_number() == indexNumber && i.getCourse().getCourse_code().equals(courseCode)){
-//                registered = true;
-//                stud.getRegistered().remove(i);
-//                break;
-//            }
-//        }
-//
-//        // if index was not found in student, return error
-//        if (!registered)
-//            return "You are not registered for that index!";
-//
-//        // remove student from the index
-//        for (Index i: c.getIndexes()){
-//            if (i.getIndex_number()==indexNumber){
-//                for (Student x: i.getEnrolledStudents())
-//                    if (x.getUsername().equals(username)) {
-//                        i.getEnrolledStudents().remove(x);
-//                        System.out.println("Removed");
-//                        System.out.println("No. of enrolled sutdnets: "+ i.getEnrolledStudents().size());
-//                        break;
-//                    }
-//            }
-//        }
-//
-//        fm.write_student(studentList);
-//        fm.write_course(courseList);
-//
-//        return "You have successfully dropped the course!";
-//    }
+    public String dropRegisteredCourse(String username, String courseCode, int indexNumber){
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
+        Index i = dc.getCourseIndex(c, indexNumber);
 
+        // remove index from student
+        // remove student from index
+        if (stud.getRegistered().contains(i)) {
+            stud.getRegistered().remove(i);
+            i.getEnrolledStudents().remove(stud);
 
-    // helper methods
-    private Student getStudentByUsername(String username){
-        for (Student stud: dc.getStudentList())
-            if (stud.getUsername().equals(username))
-                return stud;
-        return null;
-    }
+            // write to file
+            FileManager.write_all(dc);
+            return "You have successfully dropped the course!";
 
-    private Course getCourseByCode(String courseCode){
-        for(Course course: dc.getCourseList())
-        {
-            if(course.getCourse_code().equals(courseCode))
-                return course;
+        }else{
+            return "You are not registered in that index!";
         }
-        return null;
     }
+
+    public String dropWaitlistedCourse(String username, String courseCode, int indexNumber){
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
+        Index i = dc.getCourseIndex(c, indexNumber);
+
+        // remove index from student
+        // remove student from index
+        if (stud.getWaitlisted().contains(i)) {
+            stud.getWaitlisted().remove(i);
+            i.getWaitlistedStudents().remove(stud);
+
+            // write to file
+            FileManager.write_all(dc);
+            return "You have been removed from the waitlist!";
+
+        }else{
+            return "You are not in the waitlist for that index!";
+        }
+    }
+
 }
 
-//    private Course getCourseByCode(String courseCode){
-//        for(Course course: courseList)
-//        {
-//            if(course.getCourse_code().equals(courseCode))
-//                return course;
-//        }
-//        return null;
-//    }
-//
-//}
