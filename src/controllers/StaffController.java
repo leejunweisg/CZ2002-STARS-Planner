@@ -2,40 +2,26 @@ package controllers;
 
 import FileManager.FileManager;
 import model.*;
-
+import FileManager.DataContainer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class StaffController {
 
-    private FileManager fm;
-    private ArrayList<Staff> staffList;
-    private ArrayList<Student> studentList;
-    private ArrayList<Course> courseList;
+    private final DataContainer dc;
 
-    public StaffController() {
-        fm = new FileManager();
-    }
-
-    private void refreshData(){
-//        ArrayList<ArrayList<Object>> biglist = fm.read_all();
-//        staffList = (ArrayList<Staff>)biglist.get(0)
+    public StaffController(DataContainer dc) {
+        this.dc = dc;
     }
 
     // validation methods to be used from the UI
     public boolean existUsername(String username){
         // read latest students from file
-        studentList = fm.read_student();
-        staffList = fm.read_staff();
-
-        for (Student stud: studentList)
+        for (Student stud: dc.getStudentList())
             if (stud.getUsername().equals(username))
                 return true;
-        for (Staff s: staffList)
+        for (Staff s: dc.getStaffList())
             if (s.getUsername().equals(username))
                 return true;
 
@@ -44,8 +30,7 @@ public class StaffController {
 
     public boolean existMatricNumber(String matric_number){
         // read latest students from file
-        studentList = fm.read_student();
-        for (Student stud: studentList)
+        for (Student stud: dc.getStudentList())
             if (stud.getMatric_number().equals(matric_number))
                 return true;
 
@@ -62,8 +47,7 @@ public class StaffController {
     }
 
     public boolean existCourse(String courseCode){
-        courseList = fm.read_course();
-        for (Course c: courseList){
+        for (Course c: dc.getCourseList()){
             if (c.getCourse_code().equals(courseCode.toUpperCase()))
                 return true;
         }
@@ -72,10 +56,6 @@ public class StaffController {
 
     // methods for menu tasks
     public String addStudent(String username, String passwordPlain, String fullname, String gender, String nationality, String dob, String matric_number, String matriculation_date){
-        // read latest students & staff data from file
-        studentList = fm.read_student();
-        staffList = fm.read_staff();
-
         // convert variables to required types
         Gender genderEnum = Gender.valueOf(gender);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
@@ -83,18 +63,14 @@ public class StaffController {
         LocalDate matricDateParsed = LocalDate.parse(matriculation_date, formatter);
 
         // add student
-        studentList.add(new Student(username, passwordPlain, fullname, genderEnum, nationality, dobParsed, matric_number, matricDateParsed));
+        dc.getStudentList().add(new Student(username, passwordPlain, fullname, genderEnum, nationality, dobParsed, matric_number, matricDateParsed));
 
         // write changes to file
-        fm.write_student(studentList);
-
+        FileManager.write_all(dc);
         return "Student added successfully!";
     }
 
     public String setStudentAccess(String matric_number, String startPeriod,String endPeriod){
-        // read latest students from file
-        fm.read_student();
-
         // parse dates
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
         LocalDateTime start = LocalDateTime.parse(startPeriod, formatter);
@@ -110,7 +86,7 @@ public class StaffController {
             stud.setEndPeriod(end);
 
             // write changes to file
-            fm.write_student(studentList);
+            FileManager.write_all(dc);
 
             // return success message
             return "Access period successfully set!";
@@ -120,48 +96,46 @@ public class StaffController {
     }
 
     public String createCourse(String courseCode, String courseName, String courseSchool){
-        courseList = fm.read_course();
-
         School school = School.valueOf(courseSchool);
-        courseList.add(new Course(courseCode, courseName, school));
+        dc.getCourseList().add(new Course(courseCode, courseName, school));
 
-        fm.write_course(courseList);
-
+        FileManager.write_all(dc);
         return "Course Added Successfully!";
 
     }
 
-    public String createIndex(String courseCode, String indexNum, String maxCap) {
-        //indexList = fm.read_index();
-        courseList =fm.read_course();
-        Course course = getCourseByCode(courseCode);
-
-        int indexNumber = Integer.parseInt(indexNum);
-        int maxCapacity = Integer.parseInt(maxCap);
-        if(course!=null) {
-            ArrayList<Index> indexList = course.getIndexes(); // gives current array list of indexes
-            indexList.add(new Index(course, indexNumber, maxCapacity));
-            course.setIndexes(indexList);
-            fm.write_course(courseList);
-            return "Success!";
-        }
-        else{
-            return "failed";
-        }
-    }
-
+//    public String createIndex(String courseCode, String indexNum, String maxCap) {
+//        //indexList = fm.read_index();
+//        courseList =fm.read_course();
+//        Course course = getCourseByCode(courseCode);
+//
+//        int indexNumber = Integer.parseInt(indexNum);
+//        int maxCapacity = Integer.parseInt(maxCap);
+//        if(course!=null) {
+//            ArrayList<Index> indexList = course.getIndexes(); // gives current array list of indexes
+//            indexList.add(new Index(course, indexNumber, maxCapacity));
+//            course.setIndexes(indexList);
+//            fm.write_course(courseList);
+//            return "Success!";
+//        }
+//        else{
+//            return "failed";
+//        }
+//    }
+//
     public String checkIndexSlot(String courseCode, int indexNumber){
         // read latest courses from file
-        courseList = fm.read_course();
 
         // retrieve the course
         Course c = getCourseByCode(courseCode);
 
         // find the index
-        for (Index i: c.getIndexes()) {
-            if (i.getIndex_number() == indexNumber)
-                return String.format("\nCourse: %s %s \t Index: %d \t Capacity: %d/%d", courseCode, c.getCourse_name(),
-                        indexNumber, i.getEnrolledStudents().size(), i.getMax_capacity());
+        if (c != null) {
+            for (Index i: c.getIndexes()) {
+                if (i.getIndex_number() == indexNumber)
+                    return String.format("\nCourse: %s %s \t Index: %d \t Capacity: %d/%d", courseCode, c.getCourse_name(),
+                            indexNumber, i.getEnrolledStudents().size(), i.getMax_capacity());
+            }
         }
 
         // index not found
@@ -169,72 +143,55 @@ public class StaffController {
     }
 
     public String printByIndex(String courseCode, int indexNumber) {
-
-        // read latest courses from file
-        studentList = fm.read_student();
-        courseList = fm.read_course();
-
-        for(Student asd: studentList){
-            if (asd.getUsername().equals("JLEE254")) {
-                asd.setFullname("Fucking idiot!");
-                System.out.println("idiot set");
-            }
-        }
-
         // retrieve the course
         Course c = getCourseByCode(courseCode);
 
         // if course does not have any index
-        if (c.getIndexes() == null)
+        if (c != null && c.getIndexes() == null)
             return "This course has no indexes!";
 
         // find the index
         StringBuilder sb;
-        for (Index i : c.getIndexes()) {
-            if (i.getIndex_number() == indexNumber) {
-                sb = new StringBuilder("All registered students:\n");
+        if (c != null)
+            for (Index i : c.getIndexes())
+                if (i.getIndex_number() == indexNumber) {
+                    sb = new StringBuilder("All registered students:\n");
 
-                for (Student stud : i.getEnrolledStudents())
-                    sb.append(stud).append("\n");
-                return sb.toString();
-            }
-        }
+                    for (Student stud : i.getEnrolledStudents())
+                        sb.append(stud).append("\n");
+                    return sb.toString();
+                }
+
+
         return "The index number you entered was not found in the course.";
     }
 
     public String printByCourse(String courseCode){
-        // read latest courses from file
-        courseList = fm.read_course();
 
         // retrieve the course
         Course c = getCourseByCode(courseCode);
 
         StringBuilder sb;
         sb = new StringBuilder("All registered students:\n");
-        for (Index i : c.getIndexes()) {
-            for (Student stud : i.getEnrolledStudents())
-                sb.append(String.format("%d \t %s\n",  i.getIndex_number(), stud));
-        }
+        if (c != null)
+            for (Index i : c.getIndexes()) {
+                for (Student stud : i.getEnrolledStudents())
+                    sb.append(String.format("%d \t %s\n",  i.getIndex_number(), stud));
+            }
+
         return sb.toString();
     }
 
     // internal class helper methods
     private Student getStudentByMatric(String matric){
-        for (Student stud: studentList)
+        for (Student stud: dc.getStudentList())
             if (stud.getMatric_number().equals(matric))
                 return stud;
         return null;
     }
 
-    private Student getStudentByUsername(String username){
-        for (Student stud: studentList)
-            if (stud.getUsername().equals(username))
-                return stud;
-        return null;
-    }
-
     private Course getCourseByCode(String courseCode){
-        for(Course course: courseList)
+        for(Course course: dc.getCourseList())
         {
             if(course.getCourse_code().equals(courseCode))
                 return course;
