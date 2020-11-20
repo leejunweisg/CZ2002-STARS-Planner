@@ -14,14 +14,13 @@ public class StudentController {
     }
 
     public String registerForCourse(String username, String courseCode, int indexNumber){
-        System.out.println("asd");
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
 
         // Check if student already registered for this course
         for (Index i: stud.getRegistered())
             if (i.getCourse() == c)
-                return "You have already registered for this course!";
+                return "You are already registered for this course!";
 
         // Check if student already waitlisted for this course
         for (Index i: stud.getWaitlisted())
@@ -90,5 +89,19 @@ public class StudentController {
         }
     }
 
+    public String displayStudentCourse(String username){
+        Student stud = dc.getStudentByUsername(username);
+
+        // return error message if user is not registered for anything
+        if (stud.getRegistered().size() + stud.getWaitlisted().size() <= 0)
+            return "You are not registered for any courses!";
+
+        // build string of registred/waitlisted courses
+        StringBuilder sb = new StringBuilder();
+        for (Index i: stud.getRegistered())
+            sb.append(i).append("\n");
+
+        return sb.toString();
+    }
 }
 

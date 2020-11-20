@@ -77,7 +77,6 @@ public class Index implements Serializable {
         max_capacity = max_capacity + (max);
     }
 
-
     public ArrayList<TimeSlot> getLectures() {
         return lectures;
     }
@@ -102,6 +101,14 @@ public class Index implements Serializable {
         this.labs = labs;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Course: ").append(course.getCourse_code()).append(" ").append(course.getCourse_name()).append("\n");
+        sb.append("Index: ").append(index_number).append("\n");
+        sb.append("Status: ").append("REGISTERED");
+        return sb.toString();
+    }
 
     // simple helper functions (not considered as business logic)
     public int getVacancies(){

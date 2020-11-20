@@ -58,7 +58,8 @@ public class STARSPlanner {
     private void adminMenu(String username) {
         int choice=-1;
         do{
-            System.out.printf("\n[Admin Menu] Logged in as: %s\n", username);
+            System.out.println("----------------------------------------------------");
+            System.out.printf("[Admin Menu] Logged in as: %s\n", username);
             System.out.println("1. Add a student");
             System.out.println("2. Set access period for a student");
             System.out.println("3. Create new course");
@@ -67,8 +68,8 @@ public class STARSPlanner {
             System.out.println("6. Print Student list by index number");
             System.out.println("7. Print student list by course");
             System.out.println("0. Log out");
-
-            System.out.print("\nEnter choice: ");
+            System.out.println("----------------------------------------------------");
+            System.out.print("Enter choice: ");
             try {
                 choice = Integer.parseInt(sc.nextLine());
             }catch(Exception e){
@@ -462,7 +463,8 @@ public class STARSPlanner {
     private void studentMenu(String username){
         int choice=0;
         do{
-            System.out.printf("\n[Student Menu] Logged in as: %s\n", username);
+            System.out.println("----------------------------------------------------");
+            System.out.printf("[Student Menu] Logged in as: %s\n", username);
             System.out.println("1. Register for a Course");
             System.out.println("2. Drop Registered Course");
             System.out.println("3. Drop Waitlisted Course");
@@ -471,8 +473,9 @@ public class STARSPlanner {
             System.out.println("6. Change Index Number of Registered Course");
             System.out.println("7. Swop Index Number with Another Student");
             System.out.println("0. Log out");
+            System.out.println("----------------------------------------------------");
 
-            System.out.print("\nEnter choice: ");
+            System.out.print("Enter choice: ");
             try {
                 choice = Integer.parseInt(sc.nextLine());
             }catch(Exception e){
@@ -483,7 +486,7 @@ public class STARSPlanner {
                 case 1 -> registerForCourse(username);
                 case 2 -> dropRegisteredCourse(username);
                 case 3 -> dropWaitlistedCourse(username);
-//                case 4 -> updateCourse();
+                case 4 -> displayStudentCourse(username);
 //                case 5 -> checkIndexSlots();
 //                case 6 -> printByIndex();
 //                case 7 -> printByCourse();
@@ -621,4 +624,8 @@ public class STARSPlanner {
 
     }
 
+    private void displayStudentCourse(String username){
+        System.out.println("\n[Registered/Waitlisted Courses]");
+        System.out.println(student_controller.displayStudentCourse(username));
+    }
 }
