@@ -62,7 +62,6 @@ public class StaffController {
 
         FileManager.write_all(dc);
         return "Course Added Successfully!";
-
     }
 
 //    public String createIndex(String courseCode, String indexNum, String maxCap) {
@@ -136,6 +135,5 @@ public class StaffController {
         else
             return sb.toString();
     }
-
 
 }

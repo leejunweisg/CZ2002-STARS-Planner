@@ -122,6 +122,7 @@ public class StudentController {
             if (newIndex.getVacancies() > 0){
                 deregisterStudent(oldIndex, stud);
                 registerStudent(newIndex, stud);
+                FileManager.write_all(dc);
                 return "Index successfully changed!";
             }
 
@@ -141,10 +142,12 @@ public class StudentController {
             i.getEnrolledStudents().add(front);
             front.getRegistered().add(i);
 
-            //notification
+            // notification
             System.out.printf("Notification to Matric Number %s: You have been enrolled into %s %s, %d",
                     front.getMatric_number(), i.getCourse().getCourse_code(), i.getCourse().getCourse_name(),
                     i.getIndex_number());
+
+            FileManager.write_all(dc);
         }
     }
 
@@ -176,6 +179,7 @@ public class StudentController {
         deregisterStudent(newIndex, stud2);
         deregisterStudent(newIndex, stud1);
 
+        FileManager.write_all(dc);
         return "Index successfully swapped!";
     }
 
