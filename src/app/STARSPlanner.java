@@ -3,6 +3,7 @@ package app;
 import controllers.LoginController;
 import controllers.StaffController;
 import controllers.StudentController;
+import jdk.swing.interop.SwingInterOpUtils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -57,7 +58,7 @@ public class STARSPlanner {
             System.out.println("2. Set access period for a student");
             System.out.println("3. Create new course");
             System.out.println("4. Update a course");
-            System.out.println("5. Check available slot for an index number in a Course");
+            System.out.println("5. Check slot availability for an index number in a Course");
             System.out.println("6. Print Student list by index number");
             System.out.println("7. Print student list by course");
             System.out.println("0. Log out");
@@ -457,9 +458,113 @@ public class STARSPlanner {
     }
 
     private void studentMenu(String username){
-        System.out.println("\nHi student! Logged in as: " + username);
+        int choice=0;
+        do{
+            System.out.printf("\n[Student Menu] Logged in as: %s\n", username);
+            System.out.println("1. Register for a Course");
+            System.out.println("2. Drop Registered Course");
+            System.out.println("3. Drop Waitlisted Course");
+            System.out.println("4. Display Registered/Waitlisted Courses");
+            System.out.println("5. Check Vacancies Available");
+            System.out.println("6. Change Index Number of Registered Course");
+            System.out.println("7. Swop Index Number with Another Student");
+            System.out.println("0. Log out");
+
+            System.out.print("\nEnter choice: ");
+            try {
+                choice = Integer.parseInt(sc.nextLine());
+            }catch(Exception e){
+                continue;
+            }
+
+            switch(choice){
+                case 1 -> registerForCourse(username);
+                case 2 -> dropRegisteredCourse(username);
+                case 3 -> createCourse();
+                case 4 -> updateCourse();
+                case 5 -> checkIndexSlots();
+                case 6 -> printByIndex();
+                case 7 -> printByCourse();
+            }
+        }while(choice !=0);
+
         // for quick test only, no checks done
         student_controller.registerForCourse("JLEE254", "CZ2001", 101050);
+    }
+
+    private void registerForCourse(String username){
+        System.out.println("\n[Register For a Course]");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!staff_controller.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number (does not mean it exists)
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+            break;
+        }
+
+        System.out.println(student_controller.registerForCourse(username, courseCode,indexNumber));
+    }
+
+    private void dropRegisteredCourse(String username){
+        System.out.println("\n[Drop a Registered Course]");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!staff_controller.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number (does not mean it exists)
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+            break;
+        }
+
+        System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+
     }
 
 }

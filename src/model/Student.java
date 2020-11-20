@@ -24,6 +24,7 @@ public class Student extends User{
 
         // initialize registered list
         registered = new ArrayList<>();
+        waitlisted = new ArrayList<>();
     }
 
     public String getMatric_number() {

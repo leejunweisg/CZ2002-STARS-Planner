@@ -21,10 +21,17 @@ public class StaffController {
         fm = new FileManager();
     }
 
+    private void refreshData(){
+//        ArrayList<ArrayList<Object>> biglist = fm.read_all();
+//        staffList = (ArrayList<Staff>)biglist.get(0)
+    }
+
     // validation methods to be used from the UI
     public boolean existUsername(String username){
         // read latest students from file
         studentList = fm.read_student();
+        staffList = fm.read_staff();
+
         for (Student stud: studentList)
             if (stud.getUsername().equals(username))
                 return true;
@@ -162,8 +169,17 @@ public class StaffController {
     }
 
     public String printByIndex(String courseCode, int indexNumber) {
+
         // read latest courses from file
+        studentList = fm.read_student();
         courseList = fm.read_course();
+
+        for(Student asd: studentList){
+            if (asd.getUsername().equals("JLEE254")) {
+                asd.setFullname("Fucking idiot!");
+                System.out.println("idiot set");
+            }
+        }
 
         // retrieve the course
         Course c = getCourseByCode(courseCode);

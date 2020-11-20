@@ -13,6 +13,31 @@ import java.util.ArrayList;
 
 public class FileManager {
 
+    public ArrayList<ArrayList<Object>> read_all(){
+        ArrayList<ArrayList<Object>> biglist = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream("biglist.dat");
+            ObjectInputStream in = new ObjectInputStream(fis);
+            biglist = (ArrayList<ArrayList<Object>>) in.readObject();
+            in.close();
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("Failed to read all");
+            force_write();
+        }
+        return biglist;
+    }
+
+    public void write_all(ArrayList<Object> biglist){
+        try {
+            FileOutputStream fos = new FileOutputStream("biglist.dat");
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(biglist);
+            out.close();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public ArrayList<Staff> read_staff(){
         ArrayList<Staff> staffList = new ArrayList<>();
         try {
@@ -22,7 +47,7 @@ public class FileManager {
             in.close();
         } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Failed to load staffs.");
-            force_write(1);
+            force_write();
         }
 
         //System.out.println("Staffs loaded: " + staffList.size());
@@ -49,7 +74,7 @@ public class FileManager {
             in.close();
         } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Failed to load students.");
-            force_write(2);
+            force_write();
         }
         //System.out.println("Students loaded: " + studentList.size());
         return studentList;
@@ -75,7 +100,7 @@ public class FileManager {
             in.close();
         } catch (IOException | ClassNotFoundException ex) {
             System.out.println("Failed to load courses.");
-            force_write(3);
+            force_write();
         }
 
         //System.out.println("Courses loaded: " + courseList.size());
@@ -94,40 +119,36 @@ public class FileManager {
     }
 
     // use this method to write empty arraylists to file
-    public void force_write(int which){
-        switch(which){
-            case 1:
-                ArrayList<Staff> staff = new ArrayList<>();
-                staff.add(new Staff("LILYLEE", "password123", "Lily Lee", Gender.F, "Singapore", LocalDate.of(1997, 5, 15), "S60011C"));
-                write_staff(staff);
-                break;
+    public void force_write(){
 
-            case 2:
-                ArrayList<Student> students = new ArrayList<>();
-                students.add(new Student("JLEE254", "password123", "Lee Jun Wei", Gender.M, "Singapore", LocalDate.of(1997, 5, 15), "U1922896C", LocalDate.of(2019, 1, 1) ));
-                write_student(students);
-                break;
+        ArrayList<Staff> staffs = new ArrayList<>();
+        ArrayList<Student> students = new ArrayList<>();
+        ArrayList<Course> courses = new ArrayList<>();
 
-            case 3:
-                ArrayList<Course> course = new ArrayList<>();
+        // hardcoded staffs
+        Staff s1 = new Staff("LILYLEE", "password123", "Lily Lee", Gender.F, "Singapore", LocalDate.of(1997, 5, 15), "S60011C");
+        staffs.add(s1);
 
-                // hardcode cz2001's indexes and timeslots
-                Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
-                Index i1 = new Index(c1, 101050, 30);
-                Index i2 = new Index(c1, 101060, 25);
-                c1.getIndexes().add(i1);
-                c1.getIndexes().add(i2);
-                //TODO hardcode Timeslots here
+        // hardcoded students
+        Student stud1 = new Student("JLEE254", "password123", "Lee Jun Wei", Gender.M, "Singapore", LocalDate.of(1997, 5, 15), "U1922896C", LocalDate.of(2019, 1, 1) );
+        students.add(stud1);
 
-                // hardcode cz3001
-                Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE);
+        // hardcode cz2001's indexes and timeslots
+        Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
+        Index i1 = new Index(c1, 101050, 30);
+        Index i2 = new Index(c1, 101060, 25);
+        c1.getIndexes().add(i1);
+        c1.getIndexes().add(i2);
+        //TODO hardcode Timeslots here
 
-                course.add(c1);
-                course.add(c2);
-                write_course(course);
-                break;
+        // hardcode cz3001, empty index
+        Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE);
+        courses.add(c1);
+        courses.add(c2);
 
-        }
+        write_staff(staffs);
+        write_student(students);
+        write_course(courses);
 
         System.out.println("Hardcoded values saved to file. Please restart application.");
         System.exit(0);
