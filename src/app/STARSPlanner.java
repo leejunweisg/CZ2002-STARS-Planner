@@ -1,8 +1,10 @@
 package app;
 
+import FileManager.FileManager;
 import controllers.LoginController;
 import controllers.StaffController;
 import controllers.StudentController;
+import FileManager.DataContainer;
 import jdk.swing.interop.SwingInterOpUtils;
 
 import java.time.LocalDate;
@@ -16,12 +18,14 @@ public class STARSPlanner {
     private LoginController login_controller;
     private StudentController student_controller;
     private StaffController staff_controller;
+    private DataContainer data_container;
     private Scanner sc = new Scanner(System.in);
 
     public STARSPlanner() {
-        login_controller = new LoginController();
-        student_controller = new StudentController();
-        staff_controller = new StaffController();
+        data_container = FileManager.read_all();
+        login_controller = new LoginController(data_container);
+        student_controller = new StudentController(data_container);
+        staff_controller = new StaffController(data_container);
     }
 
     public void run() {
@@ -51,7 +55,7 @@ public class STARSPlanner {
     }
 
     private void adminMenu(String username) {
-        int choice=0;
+        int choice=-1;
         do{
             System.out.printf("\n[Admin Menu] Logged in as: %s\n", username);
             System.out.println("1. Add a student");
@@ -74,7 +78,7 @@ public class STARSPlanner {
                 case 1 -> addStudent();
                 case 2 -> editStudentAccess();
                 case 3 -> createCourse();
-                case 4 -> updateCourse();
+//                case 4 -> updateCourse();
                 case 5 -> checkIndexSlots();
                 case 6 -> printByIndex();
                 case 7 -> printByCourse();
@@ -248,116 +252,114 @@ public class STARSPlanner {
     }
 
     private void createCourse(){
-
         System.out.println("\n[Create Course]");
 
         String courseCode, courseName, courseSchool;
 
-        while(true){
-            try{
-                System.out.print("Enter New Course Code: ");
-                courseCode = sc.nextLine();
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
 
-                if(courseCode.toLowerCase().equals("exit")){
-                    System.out.println("exit(). press enter to go back to main menu");
-                    sc.nextLine();
-                    return;
-                }
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(staff_controller.existCourse(courseCode)) {
+                System.out.println("Course code already exists!");
+                return;
+            }else
                 break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
         }
+
         while(true){
-            try{
-                System.out.print("Enter New Course Name: ");
-                courseName = sc.nextLine();
+            System.out.print("Enter New Course Name: ");
+            courseName = sc.nextLine();
+            if (courseName.isEmpty())
+                System.out.println("You need to enter something!");
+            else
                 break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
         }
+
         while(true){
-            try{
-                System.out.print("Enter School: ");
-                courseSchool = sc.nextLine();
-                if (!staff_controller.existSchool(courseSchool))
-                    System.out.println("error");
-                //TODO School enum validation
+            System.out.print("Enter School: ");
+            courseSchool = sc.nextLine().toUpperCase();
+            if (courseSchool.isEmpty())
+                System.out.println("You need to enter something!");
+            else if (!staff_controller.existSchool(courseSchool))
+                System.out.println("School does not exist!");
+            else
                 break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
         }
+
         System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool));
-
-
     }
-
-    private void updateCourse(){
-        //TODO updateCourse()
-        int choice=0;
-        do{
-            System.out.println("\n[Update Course]");
-            System.out.println("1. Create Index for a Course");
-            System.out.println("2. Remove Index from a Course");
-            System.out.println("0. Back");
-
-            System.out.print("\nEnter choice: ");
-            choice = Integer.parseInt(sc.nextLine());
-
-            switch(choice){
-                case 1 -> createIndex();
-                case 2 -> removeIndex();
-            }
-        }while(choice !=0);
-    }
-
-    private void createIndex(){
-
-        System.out.println("\n[Create Index]");
-        //call staff controller
-        String courseCode, indexNumber, maxCapacity;
-
-        while(true) {
-            try {
-                System.out.println("Enter Course Code: ");
-                //TODO Check if course code exist
-                courseCode = sc.nextLine();
-                break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
-        }
-        while(true) {
-            try {
-                System.out.println("Enter Index Number: ");
-                //TODO Check if course code exist
-                indexNumber = sc.nextLine();
-                break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
-        }
-        while(true) {
-            try {
-                System.out.println("Enter Course maximum Capacity: ");
-                //TODO Check if course code exist
-                maxCapacity = sc.nextLine();
-                break;
-            }catch(Exception e){
-                System.out.println("Error");
-            }
-        }
-
-        System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
-
-    }
-
-    private void removeIndex(){
-        System.out.println("\n[Remove Index]");
-        //call staff controller
-    }
+//
+//    private void updateCourse(){
+//        //TODO updateCourse()
+//        int choice=0;
+//        do{
+//            System.out.println("\n[Update Course]");
+//            System.out.println("1. Create Index for a Course");
+//            System.out.println("2. Remove Index from a Course");
+//            System.out.println("0. Back");
+//
+//            System.out.print("\nEnter choice: ");
+//            choice = Integer.parseInt(sc.nextLine());
+//
+//            switch(choice){
+//                case 1 -> createIndex();
+//                case 2 -> removeIndex();
+//            }
+//        }while(choice !=0);
+//    }
+//
+//    private void createIndex(){
+//
+//        System.out.println("\n[Create Index]");
+//        //call staff controller
+//        String courseCode, indexNumber, maxCapacity;
+//
+//        while(true) {
+//            try {
+//                System.out.println("Enter Course Code: ");
+//                //TODO Check if course code exist
+//                courseCode = sc.nextLine();
+//                break;
+//            }catch(Exception e){
+//                System.out.println("Error");
+//            }
+//        }
+//        while(true) {
+//            try {
+//                System.out.println("Enter Index Number: ");
+//                //TODO Check if course code exist
+//                indexNumber = sc.nextLine();
+//                break;
+//            }catch(Exception e){
+//                System.out.println("Error");
+//            }
+//        }
+//        while(true) {
+//            try {
+//                System.out.println("Enter Course maximum Capacity: ");
+//                //TODO Check if course code exist
+//                maxCapacity = sc.nextLine();
+//                break;
+//            }catch(Exception e){
+//                System.out.println("Error");
+//            }
+//        }
+//
+//        System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
+//
+//    }
+//
+//    private void removeIndex(){
+//        System.out.println("\n[Remove Index]");
+//        //call staff controller
+//    }
 
     private void checkIndexSlots(){
         System.out.println("\n[Check available slot for an index number]");
@@ -396,11 +398,11 @@ public class STARSPlanner {
         System.out.println(staff_controller.checkIndexSlot(courseCode,indexNumber));
     }
 
-    private void printByIndex(){
+    private void printByIndex() {
         System.out.println("\n[Print Student list by index number]");
 
         String courseCode;
-        while (true){
+        while (true) {
             System.out.print("Enter Course Code: ");
             courseCode = sc.nextLine().toUpperCase();
 
@@ -410,7 +412,7 @@ public class STARSPlanner {
 
             if (!matcher.matches())
                 System.out.println("Invalid course code!");
-            else if(!staff_controller.existCourse(courseCode))
+            else if (!staff_controller.existCourse(courseCode))
                 System.out.println("Course code is not found!");
             else
                 break;
@@ -431,7 +433,6 @@ public class STARSPlanner {
         }
 
         System.out.println(staff_controller.printByIndex(courseCode, indexNumber));
-
     }
 
     private void printByCourse(){
@@ -479,17 +480,17 @@ public class STARSPlanner {
 
             switch(choice){
                 case 1 -> registerForCourse(username);
-                case 2 -> dropRegisteredCourse(username);
-                case 3 -> createCourse();
-                case 4 -> updateCourse();
-                case 5 -> checkIndexSlots();
-                case 6 -> printByIndex();
-                case 7 -> printByCourse();
+//                case 2 -> dropRegisteredCourse(username);
+//                case 3 -> createCourse();
+//                case 4 -> updateCourse();
+//                case 5 -> checkIndexSlots();
+//                case 6 -> printByIndex();
+//                case 7 -> printByCourse();
             }
         }while(choice !=0);
 
         // for quick test only, no checks done
-        student_controller.registerForCourse("JLEE254", "CZ2001", 101050);
+        //student_controller.registerForCourse("JLEE254", "CZ2001", 101050);
     }
 
     private void registerForCourse(String username){
