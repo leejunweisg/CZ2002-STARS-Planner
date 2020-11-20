@@ -156,32 +156,33 @@ public class StudentController {
         stud.getRegistered().add(i);
     }
 
-    private String swapIndex(String username1, String username2, String courseCode, int oldIndexNum, int newIndexNum){
+    public String swapIndex(String username1, String username2, String courseCode, int oldIndexNum, int newIndexNum){
         Student stud1 = dc.getStudentByUsername(username1);
         Student stud2 = dc.getStudentByUsername(username2);
+
         Course c = dc.getCourseByCode(courseCode);
+        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+        Index newIndex = dc.getCourseIndex(c, newIndexNum);
 
         // check if first student is registered for oldIndex
-        if (!stud1.getRegistered().contains(c))
+        if (!stud1.getRegistered().contains(oldIndex))
             return "You are not registered in that index!";
 
         // check if second student is registered for newIndex
-        if (!stud2.getRegistered().contains(c))
+        if (!stud2.getRegistered().contains(newIndex))
             return "The second student is not registered in that index!";
 
-        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
-        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+
 
         // perform swap
         //TODO CHECK FOR TIME CLASH FOR BOTH STUDENTS
         registerStudent(newIndex, stud1);
         registerStudent(oldIndex, stud2);
         deregisterStudent(newIndex, stud2);
-        deregisterStudent(newIndex, stud1);
+        deregisterStudent(oldIndex, stud1);
 
         FileManager.write_all(dc);
         return "Index successfully swapped!";
     }
 
 }
-

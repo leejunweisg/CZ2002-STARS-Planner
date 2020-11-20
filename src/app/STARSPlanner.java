@@ -705,7 +705,6 @@ public class STARSPlanner {
         }
 
         System.out.println(student_controller.changeIndex(username, courseCode, oldIndexNumber, newIndexNumber));
-
     }
 
     private void swapIndex(String username){
@@ -794,6 +793,6 @@ public class STARSPlanner {
         }
 
         // try swap
-        System.out.println();
+        System.out.println(student_controller.swapIndex(username, username2,courseCode, oldIndexNumber,newIndexNumber ));
     }
 }
