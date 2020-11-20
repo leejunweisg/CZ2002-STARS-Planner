@@ -103,6 +103,10 @@ public class Index implements Serializable {
     }
 
 
+    // simple helper functions (not considered as business logic)
+    public int getVacancies(){
+        return max_capacity - enrolledStudents.size();
+    }
 
 
 
