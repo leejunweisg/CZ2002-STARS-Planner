@@ -13,9 +13,6 @@ public class Index implements Serializable {
     private ArrayList<Student> enrolledStudents;
     private ArrayList<Student> waitlistedStudents;
 
-
-    //private HashMap<sessionType, ArrayList<TimeSlot>> sessions;
-
     private ArrayList<TimeSlot> lectures;
     private ArrayList<TimeSlot> tutorials;
     private ArrayList<TimeSlot> labs;
@@ -24,12 +21,8 @@ public class Index implements Serializable {
         this.course = course;
         this.index_number = index_number;
         this.max_capacity = max_capacity;
-
-
         enrolledStudents = new ArrayList<>();
         waitlistedStudents = new ArrayList<>();
-
-
     }
 
 
@@ -103,18 +96,14 @@ public class Index implements Serializable {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Course: ").append(course.getCourse_code()).append(" ").append(course.getCourse_name()).append("\n");
-        sb.append("Index: ").append(index_number).append("\n");
-        sb.append("Status: ").append("REGISTERED");
-        return sb.toString();
+        return "Course: " + course.getCourse_code() + " " + course.getCourse_name() + "\n" +
+                "Index: " + index_number + "\n";
     }
 
     // simple helper functions (not considered as business logic)
     public int getVacancies(){
         return max_capacity - enrolledStudents.size();
     }
-
 
 
 }

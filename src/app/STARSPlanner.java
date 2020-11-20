@@ -98,7 +98,7 @@ public class STARSPlanner {
         String matric_number;
         String matriculation_date;
 
-        System.out.println("\n[Add a new Student]");
+        System.out.println("\n-> Add a new Student");
 
         // username
         while (true){
@@ -107,7 +107,7 @@ public class STARSPlanner {
             if (username.isEmpty())
                 System.out.println("You need to enter something!");
             else if (data_container.existUsername(username))
-                System.out.println("Username already exists!");
+                System.out.println("Username already exists, enter another!");
             else
                 break;
         }
@@ -204,7 +204,7 @@ public class STARSPlanner {
         String startPeriod;
         String endPeriod;
 
-        System.out.println("\n[Edit student access period]");
+        System.out.println("\n-> Edit student access period");
 
         // matric_number
         while (true){
@@ -217,18 +217,19 @@ public class STARSPlanner {
 
             if (!matcher.matches())
                 System.out.println("Invalid matric number!");
-            else if(data_container.existMatricNumber(matric_number))
-                System.out.println("Student was not added, matriculation number already exists!");
-            else
+            else if(!data_container.existMatricNumber(matric_number)) {
+                System.out.println("A student with that matriculation does not exist!");
+                return;
+            } else
                 break;
         }
 
         // start period
         while (true){
-            System.out.print("Enter start of period (dd/mm/yyyy hh:mm): ");
+            System.out.print("Enter start of period (dd/mm/yyyy hh:mm am/pm): ");
             startPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy hh:mm a");
                 LocalDate.parse(startPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -238,10 +239,10 @@ public class STARSPlanner {
 
         // end date time
         while (true){
-            System.out.print("Enter end of period (dd/mm/yyyy hh:mm): ");
+            System.out.print("Enter end of period (dd/mm/yyyy hh:mm am/pm): ");
             endPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy hh:mm a");
                 LocalDate.parse(endPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -254,7 +255,7 @@ public class STARSPlanner {
     }
 
     private void createCourse(){
-        System.out.println("\n[Create Course]");
+        System.out.println("\n-> Create Course");
 
         String courseCode, courseName, courseSchool;
 
@@ -297,7 +298,7 @@ public class STARSPlanner {
 
         System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool));
     }
-//
+
 //    private void updateCourse(){
 //        //TODO updateCourse()
 //        int choice=0;
@@ -364,7 +365,7 @@ public class STARSPlanner {
 //    }
 
     private void checkIndexSlots(){
-        System.out.println("\n[Check available slot for an index number]");
+        System.out.println("\n-> Check available slot for an index number");
 
         String courseCode;
         while (true){
@@ -387,12 +388,18 @@ public class STARSPlanner {
         while(true) {
             System.out.print("Enter Index Number: ");
 
-            // ensure user input is a valid index number (does not mean it exists)
+            // ensure user input is a valid index number in the right format
             try{
                 indexNumber = Integer.parseInt(sc.nextLine());
             }catch (Exception e){
                 System.out.println("Invalid index number!");
                 continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
             }
             break;
         }
@@ -401,10 +408,10 @@ public class STARSPlanner {
     }
 
     private void printByIndex() {
-        System.out.println("\n[Print Student list by index number]");
+        System.out.println("\n-> Print Student list by index number");
 
         String courseCode;
-        while (true) {
+        while (true){
             System.out.print("Enter Course Code: ");
             courseCode = sc.nextLine().toUpperCase();
 
@@ -414,9 +421,10 @@ public class STARSPlanner {
 
             if (!matcher.matches())
                 System.out.println("Invalid course code!");
-            else if (!data_container.existCourse(courseCode))
+            else if(!data_container.existCourse(courseCode)) {
                 System.out.println("Course code is not found!");
-            else
+                return;
+            }else
                 break;
         }
 
@@ -424,12 +432,18 @@ public class STARSPlanner {
         while(true) {
             System.out.print("Enter Index Number: ");
 
-            // ensure user input is a valid index number (does not mean it exists)
+            // ensure user input is a valid index number in the right format
             try{
                 indexNumber = Integer.parseInt(sc.nextLine());
             }catch (Exception e){
                 System.out.println("Invalid index number!");
                 continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
             }
             break;
         }
@@ -438,7 +452,7 @@ public class STARSPlanner {
     }
 
     private void printByCourse(){
-        System.out.println("\n[Print Student list by Course]");
+        System.out.println("\n-> Print Student list by Course");
 
         String courseCode;
         while (true){
@@ -461,7 +475,7 @@ public class STARSPlanner {
     }
 
     private void studentMenu(String username){
-        int choice=0;
+        int choice=-1;
         do{
             System.out.println("----------------------------------------------------");
             System.out.printf("[Student Menu] Logged in as: %s\n", username);
@@ -487,18 +501,15 @@ public class STARSPlanner {
                 case 2 -> dropRegisteredCourse(username);
                 case 3 -> dropWaitlistedCourse(username);
                 case 4 -> displayStudentCourse(username);
-//                case 5 -> checkIndexSlots();
-//                case 6 -> printByIndex();
-//                case 7 -> printByCourse();
+                case 5 -> checkIndexSlots();
+                case 6 -> changeIndex(username);
+                case 7 -> swapIndex(username);
             }
         }while(choice !=0);
-
-        // for quick test only, no checks done
-        //student_controller.registerForCourse("JLEE254", "CZ2001", 101050);
     }
 
     private void registerForCourse(String username){
-        System.out.println("\n[Register For a Course]");
+        System.out.println("\n-> Register For a Course");
 
         String courseCode;
         while (true){
@@ -535,7 +546,7 @@ public class STARSPlanner {
     }
 
     private void dropRegisteredCourse(String username){
-        System.out.println("\n[Drop a Registered Course]");
+        System.out.println("\n-> Drop a Registered Course");
 
         String courseCode;
         while (true){
@@ -580,7 +591,7 @@ public class STARSPlanner {
     }
 
     private void dropWaitlistedCourse(String username){
-        System.out.println("\n[Drop a Waitlisted Course]");
+        System.out.println("\n-> Drop a Waitlisted Course");
 
         String courseCode;
         while (true){
@@ -625,7 +636,164 @@ public class STARSPlanner {
     }
 
     private void displayStudentCourse(String username){
-        System.out.println("\n[Registered/Waitlisted Courses]");
+        System.out.println("\n-> Registered/Waitlisted Courses");
         System.out.println(student_controller.displayStudentCourse(username));
+    }
+
+    private void changeIndex(String username){
+        System.out.println("\n-> Change Index");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        int oldIndexNumber;
+        while(true) {
+            System.out.print("Enter Old Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                oldIndexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, oldIndexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        int newIndexNumber;
+        while(true) {
+            System.out.print("Enter New Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                newIndexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (oldIndexNumber == newIndexNumber) {
+                System.out.println("Old index cannot be the same as new index!");
+                return;
+            }if (!data_container.existIndexInCourse(courseCode, newIndexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        System.out.println(student_controller.changeIndex(username, courseCode, oldIndexNumber, newIndexNumber));
+
+    }
+
+    private void swapIndex(String username){
+        System.out.println("\n-> Swap Index Number with Another Student");
+
+        // login for the other student
+        System.out.print("USERNAME: ");
+        String username2 = sc.nextLine().toUpperCase();
+
+        System.out.print("PASSWORD: ");
+        String password2 = sc.nextLine();
+
+        int status = login_controller.authenticate(username2, password2);
+        switch(status){
+            case 2: //student
+                System.out.println("Verified!");
+                break;
+            case 0: //invalid
+                System.out.println("Invalid username or password!");
+                return;
+            case 1: //staff
+                System.out.println("The account is not a student account!");
+                return;
+        }
+
+        // enter course
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        int oldIndexNumber;
+        while(true) {
+            System.out.print("Enter Old Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                oldIndexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, oldIndexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        int newIndexNumber;
+        while(true) {
+            System.out.print("Enter New Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                newIndexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (oldIndexNumber == newIndexNumber) {
+                System.out.println("Old index cannot be the same as new index!");
+                return;
+            }if (!data_container.existIndexInCourse(courseCode, newIndexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        // try swap
+        System.out.println();
     }
 }

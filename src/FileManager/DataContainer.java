@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class DataContainer implements Serializable {
-
     private ArrayList<Staff> staffList;
     private ArrayList<Student> studentList;
     private ArrayList<Course> courseList;
@@ -19,7 +18,6 @@ public class DataContainer implements Serializable {
         courseList = new ArrayList<Course>();
 
         hardcode();
-
     }
 
     public ArrayList<Staff> getStaffList() {
@@ -36,22 +34,45 @@ public class DataContainer implements Serializable {
 
     private void hardcode(){
         // hardcoded staffs
-        Staff s1 = new Staff("LILYLEE", "password123", "Lily Lee", Gender.F, "Singapore", LocalDate.of(1997, 5, 15), "S60011C");
+        Staff s1 = new Staff("LILYLEE", "password123", "Lily Lee", Gender.F,
+                "Singapore", LocalDate.of(1997, 5, 15), "S60011C");
+        Staff s2 = new Staff("LIFANG", "password123", "Li Fang", Gender.F,
+                "Singapore", LocalDate.of(1989, 1, 1), "S60050D");
         staffList.add(s1);
+        staffList.add(s2);
 
         // hardcoded students
-        Student stud1 = new Student("JLEE254", "password123", "Lee Jun Wei", Gender.M, "Singapore", LocalDate.of(1997, 5, 15), "U1922896C", LocalDate.of(2019, 1, 1) );
+        Student stud1 = new Student("JLEE254", "password123", "Lee Jun Wei", Gender.M,
+                "Singapore", LocalDate.of(1997, 5, 15), "U1922896C",
+                LocalDate.of(2019, 8, 1) );
+        Student stud2 = new Student("EDAN123", "password123", "Edan Ang", Gender.M,
+                "Singapore", LocalDate.of(1997, 1, 1), "U1924567C",
+                LocalDate.of(2019, 8, 1) );
+        Student stud3 = new Student("SAMM111", "password123", "Sammy Tan", Gender.F,
+                "Singapore", LocalDate.of(1995, 8, 5), "U1822552C",
+                LocalDate.of(2018, 8, 1) );
         studentList.add(stud1);
+        studentList.add(stud2);
+        studentList.add(stud3);
 
-        // hardcode cz2001's indexes and timeslots
+        // hardcoded CZ2001, and its indexes
         Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
-        Index i1 = new Index(c1, 101050, 30);
-        Index i2 = new Index(c1, 101060, 25);
+        Index i1 = new Index(c1, 101050, 5);
+        Index i2 = new Index(c1, 101060, 5);
+        //TODO hardcode Timeslots here, TimeSlot ts1 = new TimeSlot().....
+
+        // add indexes to course
         c1.getIndexes().add(i1);
         c1.getIndexes().add(i2);
-        //TODO hardcode Timeslots here
 
-        // hardcode cz3001, empty index
+        // adding students to indexes
+        i1.getEnrolledStudents().add(stud1);
+        stud1.getRegistered().add(i1);
+
+        i2.getEnrolledStudents().add(stud2);
+        stud2.getRegistered().add(i2);
+
+        // hardcode cz2001, no index
         Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE);
         courseList.add(c1);
         courseList.add(c2);

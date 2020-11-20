@@ -27,7 +27,7 @@ public class StudentController {
             if (i.getCourse() == c)
                 return "You are currently in the waitlist for this course!";
 
-        //TODO Check for clash before registering/waitlisting
+        //TODO Check for time clash
         for (Index i: c.getIndexes()){
             // find the index
             if (i.getIndex_number() == indexNumber) {
@@ -93,15 +93,91 @@ public class StudentController {
         Student stud = dc.getStudentByUsername(username);
 
         // return error message if user is not registered for anything
-        if (stud.getRegistered().size() + stud.getWaitlisted().size() <= 0)
-            return "You are not registered for any courses!";
+        if ((stud.getRegistered().size() + stud.getWaitlisted().size()) <= 0)
+            return "You are not registered for any course!";
 
-        // build string of registred/waitlisted courses
+        // build string of registered/waitlisted courses
         StringBuilder sb = new StringBuilder();
-        for (Index i: stud.getRegistered())
-            sb.append(i).append("\n");
+        for (Index i: stud.getRegistered()) {
+            sb.append(i);
+            sb.append("Status: ").append("REGISTERED\n");
+        }
+
+        for (Index i: stud.getWaitlisted()) {
+            sb.append(i);
+            sb.append("Status: ").append("IN WAITLIST\n");
+        }
 
         return sb.toString();
     }
+
+    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
+        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+
+        // if student is indeed registered in the old index
+        if (stud.getRegistered().contains(oldIndex))
+            if (newIndex.getVacancies() > 0){
+                deregisterStudent(oldIndex, stud);
+                registerStudent(newIndex, stud);
+                return "Index successfully changed!";
+            }
+
+        return "You are not registered in that index!";
+    }
+
+    private void deregisterStudent(Index i, Student stud){
+        // remove student from index
+        i.getEnrolledStudents().remove(stud);
+
+        // remove index from student
+        stud.getRegistered().remove(i);
+
+        // if exist, enrol one student from waitlist and send notification
+        if (i.getVacancies()>0 && i.getWaitlistedStudents().size()>0){
+            Student front = i.getWaitlistedStudents().get(0);
+            i.getEnrolledStudents().add(front);
+            front.getRegistered().add(i);
+
+            //notification
+            System.out.printf("Notification to Matric Number %s: You have been enrolled into %s %s, %d",
+                    front.getMatric_number(), i.getCourse().getCourse_code(), i.getCourse().getCourse_name(),
+                    i.getIndex_number());
+        }
+    }
+
+    private void registerStudent(Index i, Student stud){
+        i.getEnrolledStudents().add(stud);
+        stud.getRegistered().add(i);
+    }
+
+    private String swapIndex(String username1, String username2, String courseCode, int oldIndexNum, int newIndexNum){
+        Student stud1 = dc.getStudentByUsername(username1);
+        Student stud2 = dc.getStudentByUsername(username2);
+        Course c = dc.getCourseByCode(courseCode);
+
+        // check if first student is registered for oldIndex
+        if (!stud1.getRegistered().contains(c))
+            return "You are not registered in that index!";
+
+        // check if second student is registered for newIndex
+        if (!stud2.getRegistered().contains(c))
+            return "The second student is not registered in that index!";
+
+        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+
+        // perform swap
+        //TODO CHECK FOR TIME CLASH FOR BOTH STUDENTS
+        registerStudent(newIndex, stud1);
+        registerStudent(oldIndex, stud2);
+        deregisterStudent(newIndex, stud2);
+        deregisterStudent(newIndex, stud1);
+
+        return "Index successfully swapped!";
+    }
+
 }
 

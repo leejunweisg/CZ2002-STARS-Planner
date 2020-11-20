@@ -83,48 +83,37 @@ public class StaffController {
 //            return "failed";
 //        }
 //    }
-//
-    public String checkIndexSlot(String courseCode, int indexNumber){
-        // read latest courses from file
 
+    public String checkIndexSlot(String courseCode, int indexNumber){
         // retrieve the course
         Course c = dc.getCourseByCode(courseCode);
 
-        // find the index
-        if (c != null) {
-            for (Index i: c.getIndexes()) {
-                if (i.getIndex_number() == indexNumber)
-                    return String.format("\nCourse: %s %s \t Index: %d \t Capacity: %d/%d", courseCode, c.getCourse_name(),
-                            indexNumber, i.getEnrolledStudents().size(), i.getMax_capacity());
-            }
-        }
+        // retrieve the index from course
+        Index i = dc.getCourseIndex(c, indexNumber);
 
-        // index not found
-        return "The index number you entered was not found in the course.";
+        // return string
+        return String.format("\nAvailable: %d\n" + "Total: %d\n" + "In waitlist: %d",
+                i.getVacancies(), i.getMax_capacity(), i.getWaitlistedStudents().size());
     }
 
     public String printByIndex(String courseCode, int indexNumber) {
         // retrieve the course
         Course c = dc.getCourseByCode(courseCode);
 
-        // if course does not have any index
-        if (c != null && c.getIndexes() == null)
-            return "This course has no indexes!";
+        // get the index
+        Index i = dc.getCourseIndex(c, indexNumber);
 
-        // find the index
-        StringBuilder sb;
-        if (c != null)
-            for (Index i : c.getIndexes())
-                if (i.getIndex_number() == indexNumber) {
-                    sb = new StringBuilder("All registered students:\n");
+        // construct string
+        if (!i.getEnrolledStudents().isEmpty()) {
+            StringBuilder sb;
+            sb = new StringBuilder("All registered students:\n");
+            for (Student stud : i.getEnrolledStudents())
+                sb.append(stud).append("\n");
 
-                    for (Student stud : i.getEnrolledStudents())
-                        sb.append(stud).append("\n");
-                    return sb.toString();
-                }
+            return sb.toString();
+        }else
+            return "There are no students registered for this index!";
 
-
-        return "The index number you entered was not found in the course.";
     }
 
     public String printByCourse(String courseCode){
@@ -133,14 +122,19 @@ public class StaffController {
         Course c = dc.getCourseByCode(courseCode);
 
         StringBuilder sb;
+        int count = 0;
         sb = new StringBuilder("All registered students:\n");
         if (c != null)
-            for (Index i : c.getIndexes()) {
-                for (Student stud : i.getEnrolledStudents())
-                    sb.append(String.format("%d \t %s\n",  i.getIndex_number(), stud));
-            }
+            for (Index i : c.getIndexes())
+                for (Student stud : i.getEnrolledStudents()) {
+                    count++;
+                    sb.append(String.format("%d \t %s\n", i.getIndex_number(), stud));
+                }
 
-        return sb.toString();
+        if (count == 0)
+            return "There are no students registered for this course!";
+        else
+            return sb.toString();
     }
 
 
