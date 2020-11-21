@@ -1,6 +1,7 @@
 package model;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,18 +14,21 @@ public class Index implements Serializable {
     private ArrayList<Student> enrolledStudents;
     private ArrayList<Student> waitlistedStudents;
 
-    private ArrayList<TimeSlot> lectures;
-    private ArrayList<TimeSlot> tutorials;
-    private ArrayList<TimeSlot> labs;
+    private HashMap<LessonType, ArrayList<TimeSlot>> lessons;
 
     public Index(Course course, int index_number, int max_capacity) {
         this.course = course;
         this.index_number = index_number;
         this.max_capacity = max_capacity;
+
         enrolledStudents = new ArrayList<>();
         waitlistedStudents = new ArrayList<>();
-    }
 
+        lessons = new HashMap<>();
+        lessons.put(LessonType.LEC, new ArrayList<TimeSlot>());
+        lessons.put(LessonType.TUT, new ArrayList<TimeSlot>());
+        lessons.put(LessonType.LAB, new ArrayList<TimeSlot>());
+    }
 
     public Course getCourse() {
         return course;
@@ -70,28 +74,20 @@ public class Index implements Serializable {
         max_capacity = max_capacity + (max);
     }
 
-    public ArrayList<TimeSlot> getLectures() {
-        return lectures;
+    public ArrayList<TimeSlot> getAllSlots(){
+        ArrayList<TimeSlot> all = new ArrayList<>();
+        all.addAll(lessons.get(LessonType.LEC));
+        all.addAll(lessons.get(LessonType.TUT));
+        all.addAll(lessons.get(LessonType.LAB));
+        return all;
     }
 
-    public void setLectures(ArrayList<TimeSlot> lectures) {
-        this.lectures = lectures;
+    public HashMap<LessonType, ArrayList<TimeSlot>> getLessons() {
+        return lessons;
     }
 
-    public ArrayList<TimeSlot> getTutorials() {
-        return tutorials;
-    }
-
-    public void setTutorials(ArrayList<TimeSlot> tutorials) {
-        this.tutorials = tutorials;
-    }
-
-    public ArrayList<TimeSlot> getLabs() {
-        return labs;
-    }
-
-    public void setLabs(ArrayList<TimeSlot> labs) {
-        this.labs = labs;
+    public void setLessons(HashMap<LessonType, ArrayList<TimeSlot>> lessons) {
+        this.lessons = lessons;
     }
 
     @Override
@@ -104,6 +100,5 @@ public class Index implements Serializable {
     public int getVacancies(){
         return max_capacity - enrolledStudents.size();
     }
-
 
 }

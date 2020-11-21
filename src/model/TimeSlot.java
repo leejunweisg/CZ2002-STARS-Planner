@@ -1,14 +1,15 @@
 package model;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 
 public class TimeSlot implements Serializable {
     private int dayOfWeek;
     private String location;
-    private int startTime;
-    private int endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
 
-    public TimeSlot(int dayOfWeek, String location, int startTime, int endTime) {
+    public TimeSlot(int dayOfWeek, String location, LocalTime startTime, LocalTime endTime) {
         this.dayOfWeek = dayOfWeek;
         this.location = location;
         this.startTime = startTime;
@@ -31,19 +32,19 @@ public class TimeSlot implements Serializable {
         this.location = location;
     }
 
-    public int getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(int startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public int getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(int endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 }

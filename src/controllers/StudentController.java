@@ -4,7 +4,6 @@ import FileManager.FileManager;
 import model.*;
 import FileManager.DataContainer;
 
-import java.util.ArrayList;
 
 public class StudentController {
     private final DataContainer dc;
@@ -171,8 +170,6 @@ public class StudentController {
         // check if second student is registered for newIndex
         if (!stud2.getRegistered().contains(newIndex))
             return "The second student is not registered in that index!";
-
-
 
         // perform swap
         //TODO CHECK FOR TIME CLASH FOR BOTH STUDENTS

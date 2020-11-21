@@ -5,11 +5,11 @@ import controllers.LoginController;
 import controllers.StaffController;
 import controllers.StudentController;
 import FileManager.DataContainer;
-import jdk.swing.interop.SwingInterOpUtils;
-import model.Student;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -80,7 +80,7 @@ public class STARSPlanner {
                 case 1 -> addStudent();
                 case 2 -> editStudentAccess();
                 case 3 -> createCourse();
-//                case 4 -> updateCourse();
+                case 4 -> updateCourse();
                 case 5 -> checkIndexSlots();
                 case 6 -> printByIndex();
                 case 7 -> printByCourse();
@@ -229,7 +229,7 @@ public class STARSPlanner {
             System.out.print("Enter start of period (dd/mm/yyyy hh:mm am/pm): ");
             startPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy hh:mm a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
                 LocalDate.parse(startPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -242,7 +242,7 @@ public class STARSPlanner {
             System.out.print("Enter end of period (dd/mm/yyyy hh:mm am/pm): ");
             endPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy hh:mm a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
                 LocalDate.parse(endPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -291,7 +291,7 @@ public class STARSPlanner {
             if (courseSchool.isEmpty())
                 System.out.println("You need to enter something!");
             else if (!data_container.existSchool(courseSchool))
-                System.out.println("School does not exist!");
+                System.out.println("School does not exist! Try again!");
             else
                 break;
         }
@@ -299,70 +299,351 @@ public class STARSPlanner {
         System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool));
     }
 
-//    private void updateCourse(){
-//        //TODO updateCourse()
-//        int choice=0;
-//        do{
-//            System.out.println("\n[Update Course]");
-//            System.out.println("1. Create Index for a Course");
-//            System.out.println("2. Remove Index from a Course");
-//            System.out.println("0. Back");
-//
-//            System.out.print("\nEnter choice: ");
-//            choice = Integer.parseInt(sc.nextLine());
-//
-//            switch(choice){
-//                case 1 -> createIndex();
-//                case 2 -> removeIndex();
-//            }
-//        }while(choice !=0);
-//    }
-//
-//    private void createIndex(){
-//
-//        System.out.println("\n[Create Index]");
-//        //call staff controller
-//        String courseCode, indexNumber, maxCapacity;
-//
-//        while(true) {
-//            try {
-//                System.out.println("Enter Course Code: ");
-//                //TODO Check if course code exist
-//                courseCode = sc.nextLine();
-//                break;
-//            }catch(Exception e){
-//                System.out.println("Error");
-//            }
-//        }
-//        while(true) {
-//            try {
-//                System.out.println("Enter Index Number: ");
-//                //TODO Check if course code exist
-//                indexNumber = sc.nextLine();
-//                break;
-//            }catch(Exception e){
-//                System.out.println("Error");
-//            }
-//        }
-//        while(true) {
-//            try {
-//                System.out.println("Enter Course maximum Capacity: ");
-//                //TODO Check if course code exist
-//                maxCapacity = sc.nextLine();
-//                break;
-//            }catch(Exception e){
-//                System.out.println("Error");
-//            }
-//        }
-//
-//        System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
-//
-//    }
-//
-//    private void removeIndex(){
-//        System.out.println("\n[Remove Index]");
-//        //call staff controller
-//    }
+    private void updateCourse(){
+        //TODO updateCourse()
+        int choice=-1;
+        do{
+            System.out.println("\n[Update Course]");
+            System.out.println("1. Update Course Code");
+            System.out.println("2. Update Course Name");
+            System.out.println("3. Create Index and Add to a Course");
+            System.out.println("4. Remove Index from a Course");
+            System.out.println("5. Add Lessons to an Index");
+            System.out.println("6. Remove Lessons from an Index");
+            System.out.println("0. Back");
+
+            System.out.print("\nEnter choice: ");
+            choice = Integer.parseInt(sc.nextLine());
+
+            switch(choice){
+                case 1 -> updateCourseCode();
+                case 2 -> updateCourseName();
+                case 3 -> createIndex();
+                case 4 -> removeIndex();
+                case 5 -> addLessons();
+                case 6 -> removeLessons();
+            }
+        }while(choice !=0);
+    }
+
+    private void updateCourseCode(){
+        String oldCode;
+        while (true){
+            System.out.print("Enter Course Code to Update: ");
+            oldCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(oldCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(oldCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        String newCode;
+        while (true){
+            System.out.print("Enter New Course Code: ");
+            newCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(newCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(data_container.existCourse(newCode))
+                System.out.println("That course code already exist, please enter another!");
+            else
+                break;
+        }
+
+        System.out.println(staff_controller.changeCourseCode(oldCode, newCode));
+
+    }
+
+    private void updateCourseName(){
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        String newName;
+        while(true){
+            System.out.print("Enter New Course Name: ");
+            newName = sc.nextLine();
+            if (newName.isEmpty())
+                System.out.println("You need to enter something!");
+            else
+                break;
+        }
+
+        System.out.println(staff_controller.changeCourseName(courseCode, newName));
+
+    }
+
+    private void createIndex(){
+
+        System.out.println("\n-> Create Index and Add to a Course");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number already exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        int maxCapacity;
+        while(true) {
+            System.out.print("Enter Max vacancies for this Index: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                maxCapacity = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid input!");
+                continue;
+            }
+
+            if (maxCapacity <= 0)
+                System.out.println("Invalid max vacancies entered, try again!");
+            else
+                break;
+        }
+
+        System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
+    }
+
+    private void removeIndex(){
+        System.out.println("\n-> Remove Index from a Course");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        System.out.println(staff_controller.removeIndex(courseCode, indexNumber));
+    }
+
+    private void addLessons(){
+        System.out.println("\n-> Add Lessons to an Index");
+
+        String courseCode;
+        while (true){
+            System.out.print("Enter Course Code: ");
+            courseCode = sc.nextLine().toUpperCase();
+
+            // use regex to check if course code entered matches format
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
+
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode)) {
+                System.out.println("Course code is not found!");
+                return;
+            }else
+                break;
+        }
+
+        int indexNumber;
+        while(true) {
+            System.out.print("Enter Index Number: ");
+
+            // ensure user input is a valid index number in the right format
+            try{
+                indexNumber = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        // loop to add new timeslot
+        while (true) {
+            int lessonType;
+            while (true) {
+                System.out.print("Enter type of lesson to add (1-Lecture, 2-Tutorial, 3-Lab): ");
+
+                try{
+                    lessonType = Integer.parseInt(sc.nextLine());
+                }catch(Exception e){
+                    System.out.println("Invalid input!");
+                    continue;
+                }
+
+                if (lessonType == 1 || lessonType == 2 || lessonType == 3)
+                    break;
+                else
+                    System.out.println("Invalid choice selected, try again!");
+            }
+
+            int dayOfWeek;
+            while (true) {
+                System.out.print("Enter day of week (1-Monday, 2-Tuesday, etc): ");
+
+                try{
+                    dayOfWeek = Integer.parseInt(sc.nextLine());
+                }catch(Exception e){
+                    System.out.println("Invalid input!");
+                    continue;
+                }
+
+                if (dayOfWeek >= 1 && dayOfWeek <= 7)
+                    break;
+                else
+                    System.out.println("Invalid day of week, try again!");
+            }
+
+            String location;
+            while (true) {
+                System.out.print("Enter lesson location: ");
+                location = sc.nextLine();
+                if (location.isEmpty())
+                    System.out.println("You need to enter something!");
+                else
+                    break;
+            }
+
+            String startTime;
+            LocalTime st;
+            while (true){
+                System.out.print("Enter start time (hh:mm am/pm): ");
+                try{
+                    startTime = sc.nextLine();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    st = LocalTime.parse(startTime, formatter);
+                    if (st.getMinute()!=0 && st.getMinute()!= 30)
+                        System.out.println("Time must be in 30-minute intervals");
+                    else
+                        break;
+                }catch(Exception e){
+                    System.out.println("Invalid time format, try again!");
+                }
+            }
+
+            String endTime;
+            LocalTime et;
+            while (true){
+                System.out.print("Enter end time (hh:mm am/pm): ");
+                try{
+                    endTime = sc.nextLine();
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    et = LocalTime.parse(endTime, formatter);
+                    if (st.getMinute()!=0 && st.getMinute()!= 30)
+                        System.out.println("Time must be in 30-minute intervals");
+                    else if (et.isBefore(st))
+                        System.out.println("End time cannot be earlier than start time!");
+                    else
+                        break;
+                }catch(Exception e){
+                    System.out.println("Invalid time format, try again!");
+                }
+            }
+
+            // add lesson
+            System.out.println(staff_controller.addNewTimeSlot(courseCode, indexNumber, lessonType, dayOfWeek, location, startTime, endTime));
+
+            // add another?
+            System.out.println("Enter 'Y' to add another lesson!");
+            if (!sc.nextLine().toUpperCase().equals("Y"))
+                break;
+        }
+    }
+
+    private void removeLessons(){
+        //TODO remove lesson
+
+        //staff_controller.removeTimeSlot(xxx);
+    }
 
     private void checkIndexSlots(){
         System.out.println("\n-> Check available slot for an index number");

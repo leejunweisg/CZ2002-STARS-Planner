@@ -4,6 +4,7 @@ import model.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class DataContainer implements Serializable {
@@ -59,7 +60,11 @@ public class DataContainer implements Serializable {
         Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
         Index i1 = new Index(c1, 101050, 5);
         Index i2 = new Index(c1, 101060, 5);
-        //TODO hardcode Timeslots here, TimeSlot ts1 = new TimeSlot().....
+
+        // create timeslot and add to hashmap->arraylist
+        // lec
+        TimeSlot t1 = new TimeSlot(1,"N4", LocalTime.of(8,30), LocalTime.of(9,30));
+        i1.getLessons().get(LessonType.LEC).add(t1);
 
         // add indexes to course
         c1.getIndexes().add(i1);

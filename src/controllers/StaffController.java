@@ -3,8 +3,11 @@ package controllers;
 import FileManager.FileManager;
 import model.*;
 import FileManager.DataContainer;
+
+import javax.swing.plaf.metal.MetalBorders;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class StaffController {
@@ -33,7 +36,7 @@ public class StaffController {
 
     public String setStudentAccess(String matric_number, String startPeriod,String endPeriod){
         // parse dates
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
         LocalDateTime start = LocalDateTime.parse(startPeriod, formatter);
         LocalDateTime end = LocalDateTime.parse(endPeriod, formatter);
 
@@ -64,24 +67,81 @@ public class StaffController {
         return "Course Added Successfully!";
     }
 
-//    public String createIndex(String courseCode, String indexNum, String maxCap) {
-//        //indexList = fm.read_index();
-//        courseList =fm.read_course();
-//        Course course = getCourseByCode(courseCode);
-//
-//        int indexNumber = Integer.parseInt(indexNum);
-//        int maxCapacity = Integer.parseInt(maxCap);
-//        if(course!=null) {
-//            ArrayList<Index> indexList = course.getIndexes(); // gives current array list of indexes
-//            indexList.add(new Index(course, indexNumber, maxCapacity));
-//            course.setIndexes(indexList);
-//            fm.write_course(courseList);
-//            return "Success!";
-//        }
-//        else{
-//            return "failed";
-//        }
-//    }
+    public String changeCourseCode(String oldCode, String newCode){
+        Course c = dc.getCourseByCode(oldCode);
+        c.setCourse_code(newCode);
+        FileManager.write_all(dc);
+        return "Course code successfully updated!";
+    }
+
+    public String changeCourseName(String courseCode, String newName){
+        Course c = dc.getCourseByCode(courseCode);
+        c.setCourse_name(newName);
+        FileManager.write_all(dc);
+        return "Course name successfully updated!";
+    }
+
+    public String createIndex(String courseCode, int indexNum, int maxCap) {
+        Course c = dc.getCourseByCode(courseCode);
+        Index newIndex = new Index(c, indexNum, maxCap);
+
+        // add index to course
+        c.getIndexes().add(newIndex);
+
+        // write changes to file
+        FileManager.write_all(dc);
+
+        return "Index added to course!";
+    }
+
+    public String removeIndex(String courseCode, int indexNum){
+        Course c = dc.getCourseByCode(courseCode);
+        Index indexToRemove = dc.getCourseIndex(c, indexNum);
+
+        // deregister students from this index
+        for (Student stud: indexToRemove.getEnrolledStudents())
+            stud.getRegistered().remove(indexToRemove);
+        for (Student stud: indexToRemove.getWaitlistedStudents())
+            stud.getWaitlisted().remove(indexToRemove);
+
+        // remove index from course
+        c.getIndexes().remove(indexToRemove);
+
+        // write to file
+        FileManager.write_all(dc);
+
+        return "The index has been successfully removed from the course";
+    }
+
+    public String addNewTimeSlot(String coursecode, int indexNumber, int lessonType, int dayOfWeek, String location, String startTime, String endTime){
+
+        Course c = dc.getCourseByCode(coursecode);
+        Index i = dc.getCourseIndex(c, indexNumber);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+        LocalTime st = LocalTime.parse(startTime, formatter);
+        LocalTime et = LocalTime.parse(endTime, formatter);
+        TimeSlot ts = new TimeSlot(dayOfWeek, location, st, et);
+
+        for (TimeSlot timeslot : i.getAllSlots()){
+            if (hasClashed(ts, timeslot))
+                return "Time clashed with an existing lesson from this index!";
+        }
+
+        switch(lessonType){
+            case 1-> i.getLessons().get(LessonType.LEC).add(ts);
+            case 2-> i.getLessons().get(LessonType.TUT).add(ts);
+            case 3-> i.getLessons().get(LessonType.LAB).add(ts);
+        }
+
+        FileManager.write_all(dc);
+        return "Lesson successfully added to course!";
+    }
+
+    public String removeTimeSlot(){
+        //TODO REMOVE TIMESLOT
+        return "";
+    }
 
     public String checkIndexSlot(String courseCode, int indexNumber){
         // retrieve the course
@@ -136,4 +196,7 @@ public class StaffController {
             return sb.toString();
     }
 
+    private boolean hasClashed(TimeSlot ts1, TimeSlot ts2){
+        return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
+    }
 }
