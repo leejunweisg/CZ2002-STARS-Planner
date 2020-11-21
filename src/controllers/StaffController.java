@@ -1,15 +1,15 @@
 package controllers;
 
+import FileManager.DataContainer;
 import FileManager.FileManager;
 import model.*;
-import FileManager.DataContainer;
 
-import javax.swing.plaf.metal.MetalBorders;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class StaffController {
 
@@ -20,7 +20,7 @@ public class StaffController {
     }
 
     // methods for menu tasks
-    public String addStudent(String username, String passwordPlain, String fullname, String gender, String nationality, String dob, String matric_number, String matriculation_date){
+    public String addStudent(String username, String passwordPlain, String fullname, String gender, String nationality, String dob, String matric_number, String matriculation_date, String email){
         // convert variables to required types
         Gender genderEnum = Gender.valueOf(gender);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
@@ -28,7 +28,7 @@ public class StaffController {
         LocalDate matricDateParsed = LocalDate.parse(matriculation_date, formatter);
 
         // add student
-        dc.getStudentList().add(new Student(username, passwordPlain, fullname, genderEnum, nationality, dobParsed, matric_number, matricDateParsed));
+        dc.getStudentList().add(new Student(username, hash(passwordPlain), fullname, genderEnum, nationality, dobParsed, matric_number, matricDateParsed, email));
 
         // write changes to file
         FileManager.write_all(dc);
@@ -200,4 +200,16 @@ public class StaffController {
     private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
         return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
+
+    private byte[] hash(String passwordStr){
+        byte[] digest=null;
+        try {
+            MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+            digest = sha256.digest(passwordStr.getBytes(StandardCharsets.UTF_8));
+        }catch(Exception e){
+            System.out.println();
+        }
+        return digest;
+    }
+
 }

@@ -1,8 +1,13 @@
 package controllers;
 
-import FileManager.FileManager;
-import model.*;
 import FileManager.DataContainer;
+import FileManager.FileManager;
+import Notification.Email;
+import Notification.NotificationInterface;
+import model.Course;
+import model.Index;
+import model.Student;
+import model.TimeSlot;
 
 import java.util.ArrayList;
 
@@ -61,13 +66,8 @@ public class StudentController {
         Course c = dc.getCourseByCode(courseCode);
         Index i = dc.getCourseIndex(c, indexNumber);
 
-        // remove index from student
-        // remove student from index
         if (stud.getRegistered().contains(i)) {
-            stud.getRegistered().remove(i);
-            i.getEnrolledStudents().remove(stud);
-
-            // write to file
+            deregisterStudent(i, stud);
             FileManager.write_all(dc);
             return "You have successfully dropped the course!";
 
@@ -146,13 +146,17 @@ public class StudentController {
         // if exist, enrol one student from waitlist and send notification
         if (i.getVacancies()>0 && i.getWaitlistedStudents().size()>0){
             Student front = i.getWaitlistedStudents().get(0);
+
             i.getEnrolledStudents().add(front);
             front.getRegistered().add(i);
 
-            // TODO notification
-            System.out.printf("Notification to Matric Number %s: You have been enrolled into %s %s, %d",
-                    front.getMatric_number(), i.getCourse().getCourse_code(), i.getCourse().getCourse_name(),
-                    i.getIndex_number());
+            front.getWaitlisted().remove(i);
+            i.getWaitlistedStudents().remove(front);
+
+            // TODO email notification
+            NotificationInterface ni = new Email();
+            String message = String.format("You have successfully registered for:\n%s %s\nIndex: %d", i.getCourse().getCourse_code(), i.getCourse().getCourse_name(), i.getIndex_number());
+            ni.sendNotification("NTU STARS Registration Notification", message, stud.getEmail());
 
             FileManager.write_all(dc);
         }

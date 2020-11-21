@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 public class Student extends User{
     private String matric_number;
+    private String email;
     private LocalDate matriculation_date;
     private LocalDateTime startPeriod;
     private LocalDateTime endPeriod;
@@ -13,10 +14,11 @@ public class Student extends User{
     private ArrayList<Index> registered;
     private ArrayList<Index> waitlisted;
 
-    public Student(String username, String passwordPlain, String fullname, Gender gender, String nationality, LocalDate dob, String matric_number, LocalDate matriculation_date) {
-        super(username, passwordPlain, fullname, gender, nationality, dob);
+    public Student(String username, byte[] password, String fullname, Gender gender, String nationality, LocalDate dob, String matric_number, LocalDate matriculation_date, String email) {
+        super(username, password, fullname, gender, nationality, dob);
         this.matric_number = matric_number;
         this.matriculation_date = matriculation_date;
+        this.email = email;
 
         // set default start and end period to current time
         this.startPeriod = LocalDateTime.now();
@@ -33,6 +35,14 @@ public class Student extends User{
 
     public void setMatric_number(String matric_number) {
         this.matric_number = matric_number;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public LocalDate getMatriculation_date() {

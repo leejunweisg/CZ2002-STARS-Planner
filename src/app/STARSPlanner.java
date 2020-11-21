@@ -1,15 +1,15 @@
 package app;
 
+import FileManager.DataContainer;
 import FileManager.FileManager;
 import controllers.LoginController;
 import controllers.StaffController;
 import controllers.StudentController;
-import FileManager.DataContainer;
 
+import java.io.Console;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,8 +41,15 @@ public class STARSPlanner {
             if (username.equals("-1"))
                 return;
 
-            System.out.print("PASSWORD: ");
-            String password = sc.nextLine();
+            Console cn = System.console();
+            String password;
+            if (cn!=null) {
+                password = new String(cn.readPassword("PASSWORD: "));
+                System.out.println(password);
+            }else {
+                System.out.print("PASSWORD (unsupported terminal, password not masked): ");
+                password = sc.nextLine();
+            }
 
             status = login_controller.authenticate(username, password);
 
@@ -97,6 +104,7 @@ public class STARSPlanner {
         String dob;
         String matric_number;
         String matriculation_date;
+        String email;
 
         System.out.println("\n-> Add a new Student");
 
@@ -113,9 +121,15 @@ public class STARSPlanner {
         }
 
         // password
+        Console cn = System.console();
         while (true){
-            System.out.print("Enter password: ");
-            password = sc.nextLine();
+            if (cn!=null) {
+                password = new String(cn.readPassword("PASSWORD: "));
+                System.out.println(password);
+            }else {
+                System.out.print("PASSWORD (unsupported terminal, password not masked): ");
+                password = sc.nextLine();
+            }
             if (password.isEmpty())
                 System.out.println("You need to enter something!");
             else
@@ -195,8 +209,25 @@ public class STARSPlanner {
             }
         }
 
+        // email
+        while (true){
+            System.out.print("Enter email address: ");
+            email = sc.nextLine();
+
+            // use regex to check if matric number entered matches format
+            Pattern pattern = Pattern.compile("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])");
+            Matcher matcher = pattern.matcher(email);
+
+            if (!matcher.matches())
+                System.out.println("Invalid email!");
+            else if(data_container.existEmail(email))
+                System.out.println("Email already exists, try again!");
+            else
+                break;
+        }
+
         // call method in STARSPlanner to add student, print result
-        System.out.println(staff_controller.addStudent(username, password, fullname, gender, nationality, dob, matric_number, matriculation_date));
+        System.out.println(staff_controller.addStudent(username, password, fullname, gender, nationality, dob, matric_number, matriculation_date, email));
     }
 
     private void editStudentAccess(){

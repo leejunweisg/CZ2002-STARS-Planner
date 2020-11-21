@@ -5,15 +5,15 @@ import java.time.LocalDate;
 
 public abstract class User implements Serializable {
     private String username;
-    private String passwordHash;
+    private byte[] passwordHash;
     private String fullname;
     private Gender gender;
     private String nationality;
     private LocalDate dob;
 
-    public User(String username, String passwordPlain, String fullname, Gender gender, String nationality, LocalDate dob) {
+    public User(String username, byte[] password, String fullname, Gender gender, String nationality, LocalDate dob) {
         this.username = username;
-        this.passwordHash = passwordPlain;
+        this.passwordHash = password;
         this.fullname = fullname;
         this.gender = gender;
         this.nationality = nationality;
@@ -28,11 +28,11 @@ public abstract class User implements Serializable {
         this.username = username;
     }
 
-    public String getPasswordHash() {
+    public byte[] getPasswordHash() {
         return passwordHash;
     }
 
-    public void setPasswordHash(String passwordHash) {
+    public void setPasswordHash(byte[] passwordHash) {
         this.passwordHash = passwordHash;
     }
 
@@ -72,4 +72,6 @@ public abstract class User implements Serializable {
     public String toString() {
         return String.format("Name: %s (%s) Nationality: %s", fullname, gender.toString(), nationality);
     }
+
+
 }
