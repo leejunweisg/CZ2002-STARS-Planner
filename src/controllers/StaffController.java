@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 public class StaffController {
 
@@ -124,7 +125,7 @@ public class StaffController {
         TimeSlot ts = new TimeSlot(dayOfWeek, location, st, et);
 
         for (TimeSlot timeslot : i.getAllSlots()){
-            if (hasClashed(ts, timeslot))
+            if (timeslotClashed(ts, timeslot))
                 return "Time clashed with an existing lesson from this index!";
         }
 
@@ -139,7 +140,7 @@ public class StaffController {
     }
 
     public String removeTimeSlot(){
-        //TODO REMOVE TIMESLOT
+        //TODO Remove TimeSlot from Course
         return "";
     }
 
@@ -196,7 +197,7 @@ public class StaffController {
             return sb.toString();
     }
 
-    private boolean hasClashed(TimeSlot ts1, TimeSlot ts2){
+    private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
         return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
 }

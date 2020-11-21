@@ -4,6 +4,8 @@ import FileManager.FileManager;
 import model.*;
 import FileManager.DataContainer;
 
+import java.util.ArrayList;
+
 
 public class StudentController {
     private final DataContainer dc;
@@ -26,26 +28,32 @@ public class StudentController {
             if (i.getCourse() == c)
                 return "You are currently in the waitlist for this course!";
 
-        //TODO Check for time clash
-        for (Index i: c.getIndexes()){
-            // find the index
-            if (i.getIndex_number() == indexNumber) {
-                // have vacancy, register
-                if (i.getVacancies()> 0) {
-                    i.getEnrolledStudents().add(stud);
-                    stud.getRegistered().add(i);
-                    FileManager.write_all(dc);
-                    return "Registration successful!";
-                // no vacancy, waitlist
-                }else{
-                    i.getWaitlistedStudents().add(stud);
-                    stud.getWaitlisted().add(i);
-                    FileManager.write_all(dc);
-                    return "The selected index is currently full! You have been added to the waitlist.";
-                }
-            }
+        Index i = dc.getCourseIndex(c, indexNumber);
+
+        // time clash for registered course
+        for (Index idx: stud.getRegistered())
+            if (indexClashed(i, idx))
+                return "Registration unsuccessful, the index clashed with another registered course!";
+
+        // time clash for waitlisted course
+        for (Index idx: stud.getWaitlisted())
+            if (indexClashed(i, idx))
+                return "Registration unsuccessful, the index clashed with another course in your waitlist!";
+
+        // have vacancy, register
+        if (i.getVacancies()> 0) {
+            i.getEnrolledStudents().add(stud);
+            stud.getRegistered().add(i);
+            FileManager.write_all(dc);
+            return "Registration successful!";
+
+        // no vacancy, waitlist
+        }else{
+            i.getWaitlistedStudents().add(stud);
+            stud.getWaitlisted().add(i);
+            FileManager.write_all(dc);
+            return "The selected index is currently full! You have been added to the waitlist.";
         }
-        return "The index number you entered was not found in the course.";
     }
 
     public String dropRegisteredCourse(String username, String courseCode, int indexNumber){
@@ -141,7 +149,7 @@ public class StudentController {
             i.getEnrolledStudents().add(front);
             front.getRegistered().add(i);
 
-            // notification
+            // TODO notification
             System.out.printf("Notification to Matric Number %s: You have been enrolled into %s %s, %d",
                     front.getMatric_number(), i.getCourse().getCourse_code(), i.getCourse().getCourse_name(),
                     i.getIndex_number());
@@ -171,8 +179,23 @@ public class StudentController {
         if (!stud2.getRegistered().contains(newIndex))
             return "The second student is not registered in that index!";
 
+        // check student 1
+        for (Index idx: stud1.getRegistered())
+            if (idx!=oldIndex && indexClashed(newIndex, idx))
+                return "Registration unsuccessful, the index clashed with another registered course!";
+        for (Index idx: stud1.getWaitlisted())
+            if (indexClashed(newIndex, idx))
+                return "Registration unsuccessful, the index clashed with another course in your waitlist!";
+
+        // check student 2
+        for (Index idx: stud2.getRegistered())
+            if (idx!= newIndex && indexClashed(oldIndex, idx))
+                return "Registration unsuccessful, the index clashed with the second student's registered course!";
+        for (Index idx: stud2.getWaitlisted())
+            if (indexClashed(oldIndex, idx))
+                return "Registration unsuccessful, the index clashed with another course in the second student's waitlist!";
+
         // perform swap
-        //TODO CHECK FOR TIME CLASH FOR BOTH STUDENTS
         registerStudent(newIndex, stud1);
         registerStudent(oldIndex, stud2);
         deregisterStudent(newIndex, stud2);
@@ -180,6 +203,22 @@ public class StudentController {
 
         FileManager.write_all(dc);
         return "Index successfully swapped!";
+    }
+
+    private boolean indexClashed(Index i1, Index i2){
+        ArrayList<TimeSlot> ts_list1 = i1.getAllSlots();
+        ArrayList<TimeSlot> ts_list2 = i2.getAllSlots();
+
+        for (TimeSlot ts1: ts_list1)
+            for(TimeSlot ts2: ts_list2)
+                if(timeslotClashed(ts1,ts2))
+                    return true;
+
+        return false;
+    }
+
+    private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
+        return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
 
 }

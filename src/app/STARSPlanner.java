@@ -300,7 +300,6 @@ public class STARSPlanner {
     }
 
     private void updateCourse(){
-        //TODO updateCourse()
         int choice=-1;
         do{
             System.out.println("\n[Update Course]");
@@ -640,7 +639,7 @@ public class STARSPlanner {
     }
 
     private void removeLessons(){
-        //TODO remove lesson
+        //TODO Remove lesson
 
         //staff_controller.removeTimeSlot(xxx);
     }
@@ -813,12 +812,18 @@ public class STARSPlanner {
         while(true) {
             System.out.print("Enter Index Number: ");
 
-            // ensure user input is a valid index number (does not mean it exists)
+            // ensure user input is a valid index number in the right format
             try{
                 indexNumber = Integer.parseInt(sc.nextLine());
             }catch (Exception e){
                 System.out.println("Invalid index number!");
                 continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNumber)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
             }
             break;
         }
@@ -997,6 +1002,11 @@ public class STARSPlanner {
 
         System.out.print("PASSWORD: ");
         String password2 = sc.nextLine();
+
+        if (username.equals(username2)) {
+            System.out.println("You can't swap with yourself!");
+            return;
+        }
 
         int status = login_controller.authenticate(username2, password2);
         switch(status){

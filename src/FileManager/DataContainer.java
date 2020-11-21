@@ -58,19 +58,21 @@ public class DataContainer implements Serializable {
 
         // hardcoded CZ2001, and its indexes
         Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
-        Index i1 = new Index(c1, 101050, 5);
-        Index i2 = new Index(c1, 101060, 5);
 
-        // create timeslot and add to hashmap->arraylist
-        // lec
+        // hardcoded indexes/time for cz2001
+        Index i1 = new Index(c1, 101050, 5);
         TimeSlot t1 = new TimeSlot(1,"N4", LocalTime.of(8,30), LocalTime.of(9,30));
         i1.getLessons().get(LessonType.LEC).add(t1);
 
-        // add indexes to course
+        Index i2 = new Index(c1, 101060, 5);
+        TimeSlot t2 = new TimeSlot(1,"N8", LocalTime.of(8,30), LocalTime.of(9,30));
+        i2.getLessons().get(LessonType.LEC).add(t2);
+
+        // add indexes to c2001
         c1.getIndexes().add(i1);
         c1.getIndexes().add(i2);
 
-        // adding students to indexes
+        // adding students to indexes of cz2001
         i1.getEnrolledStudents().add(stud1);
         stud1.getRegistered().add(i1);
 
@@ -79,6 +81,12 @@ public class DataContainer implements Serializable {
 
         // hardcode cz2001, no index
         Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE);
+        Index i3 = new Index(c2, 102050, 5);
+        TimeSlot t3 = new TimeSlot(1,"N6", LocalTime.of(9,0), LocalTime.of(10,0));
+        i3.getLessons().get(LessonType.LEC).add(t3);
+        c2.getIndexes().add(i3);
+
+        // add courses
         courseList.add(c1);
         courseList.add(c2);
     }
