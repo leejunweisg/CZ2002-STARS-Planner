@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
 
 public class StaffController {
 
@@ -139,10 +140,67 @@ public class StaffController {
         return "Lesson successfully added to course!";
     }
 
-    public String removeTimeSlot(){
-        //TODO Remove TimeSlot from Course
-        return "";
+
+    public String removeTimeSlot(String courseCode, int indexNum){
+
+        int choice, removeChoice;
+        Course c = dc.getCourseByCode("CZ2001");
+        Index i = dc.getCourseIndex(c, 101050);
+        Scanner sc = new Scanner(System.in);
+
+
+        System.out.println("--------Current Added Lessons--------");
+        System.out.println("Course: " + i.getCourse().getCourse_code());
+        System.out.println("-------------------------------------");
+        System.out.println("LECTURE");
+
+        for(int x =0; x<i.getAllSlots().size();x++) // for LECTURE
+        {
+            System.out.println(x+1+ ". ");
+            System.out.println("day of week: "+i.getLessons().get(LessonType.LEC).get(x).getDayOfWeek());
+            System.out.println("start time: "+ i.getLessons().get(LessonType.LEC).get(x).getStartTime());
+            System.out.println("end time: " + i.getLessons().get(LessonType.LEC).get(x).getEndTime());
+            System.out.println("location: " + i.getLessons().get(LessonType.LEC).get(x).getLocation());
+        }
+        System.out.println("TUTORIAL");
+
+        if(i.getLessons().get(LessonType.TUT).isEmpty()){
+            System.out.println("No Tutorial found");;
+        }
+        else {
+            for (int x = 0; x < i.getAllSlots().size(); x++) // for TUTORIAL
+            {
+                System.out.println(x + 1 + ". ");
+                System.out.println("day of week: " + i.getLessons().get(LessonType.TUT).get(x).getDayOfWeek());
+                System.out.println("start time: " + i.getLessons().get(LessonType.TUT).get(x).getStartTime());
+                System.out.println("end time: " + i.getLessons().get(LessonType.TUT).get(x).getEndTime());
+                System.out.println("location: " + i.getLessons().get(LessonType.TUT).get(x).getLocation());
+            }
+        }
+        System.out.println("LAB");
+
+        if(i.getLessons().get(LessonType.LAB).isEmpty()){
+            System.out.println("No Lab found");;
+        }
+        else {
+            for (int x = 0; x < i.getAllSlots().size(); x++) // for LABS
+            {
+                System.out.println(x + 1 + ". ");
+
+                System.out.println("day of week: " + i.getLessons().get(LessonType.LAB).get(x).getDayOfWeek());
+                System.out.println("start time: " + i.getLessons().get(LessonType.LAB).get(x).getStartTime());
+                System.out.println("end time: " + i.getLessons().get(LessonType.LAB).get(x).getEndTime());
+                System.out.println("location: " + i.getLessons().get(LessonType.LAB).get(x).getLocation());
+            }
+        }
+        System.out.println("Select which to remove (1,2,3...): ");
+        choice = sc.nextInt();
+        removeChoice = choice - 1;
+        i.getLessons().get(LessonType.LEC).remove(removeChoice);
+        return "removed successfully!";
     }
+
+
 
     public String checkIndexSlot(String courseCode, int indexNumber){
         // retrieve the course
