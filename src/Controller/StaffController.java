@@ -1,4 +1,4 @@
-package controllers;
+package Controller;
 
 import FileManager.DataContainer;
 import FileManager.FileManager;
@@ -153,7 +153,7 @@ public class StaffController {
             System.out.println("1. Lecture");
             System.out.println("2. Tutorial");
             System.out.println("3. Lab");
-            System.out.print("Select type of lesson to remove: ");
+            System.out.print("Select type of lesson (1,2,3) to remove: ");
 
             try {
                 choiceType = Integer.parseInt(sc.nextLine());
@@ -303,5 +303,49 @@ public class StaffController {
         }
         return digest;
     }
+
+    public void printAllCourses(){
+        System.out.println("-----------All Courses-----------");
+        for(int x = 0; x<dc.getCourseList().size(); x++) {
+            System.out.println(dc.getCourseList().get(x).getIndexes().toString().replaceAll("(^\\[|\\]$)", ""));
+        }
+    }
+
+    public void printAlIndex(String courseCode, int indexNumber){
+        Course c = dc.getCourseByCode(courseCode);
+        Index i = dc.getCourseIndex(c, indexNumber);
+
+        System.out.println("-----------LECTURES-----------");
+        if(i.getLessons().get(LessonType.LEC).isEmpty()){
+            System.out.println("No lectures found");
+        }
+        else {
+            for (int x = 0; x < i.getLecSlots().size(); x++) {
+                System.out.println(i.getLessons().get(LessonType.LEC).get(x).toString());
+            }
+        }
+        System.out.println("-----------TUTORIALS-----------");
+        if(i.getLessons().get(LessonType.TUT).isEmpty()){
+            System.out.println("No Tutorial lessons found");
+        }
+        else {
+            for (int x = 0; x < i.getTutSlots().size(); x++) {
+                System.out.println(i.getLessons().get(LessonType.TUT).get(x));
+            }
+        }
+        System.out.println("-----------LABS-----------");
+        if(i.getLessons().get(LessonType.LAB).isEmpty()){
+            System.out.println("No Lab lessons found");
+        }
+        else {
+            for (int x = 0; x < i.getLabSlots().size(); x++) {
+                System.out.println(i.getLessons().get(LessonType.LAB).get(x));
+            }
+        }
+    }
+
+
+
+
 
 }

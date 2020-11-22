@@ -15,6 +15,13 @@ public class Index implements Serializable {
 
     private HashMap<LessonType, ArrayList<TimeSlot>> lessons;
 
+    /**
+     * Constructor for Index
+     * Each index is linked to only 1 course
+     * @param course Calls object course
+     * @param index_number Index number of the selected course
+     * @param max_capacity Maximum number of students allowed to enroll of each index number
+     */
     public Index(Course course, int index_number, int max_capacity) {
         this.course = course;
         this.index_number = index_number;

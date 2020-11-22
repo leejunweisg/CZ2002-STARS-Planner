@@ -12,6 +12,16 @@ public class Course implements Serializable {
     // holds a list of indexes that this course has
     private ArrayList<Index> indexes;
 
+    //New Constructor
+
+    /**
+     * Constructor for Courses
+     * @param course_code course code of each modules offered e.g(CZ002)
+     * @param course_name course name of ech modules offered e.g(Object Oriented Programming)
+     * @param school School of which course is located e.g(SCSE, MAE)
+     * @param AU Allocated Unit for each course
+     */
+
     public Course(String course_code, String course_name, School school, int AU) {
         this.course_code = course_code;
         this.course_name = course_name;

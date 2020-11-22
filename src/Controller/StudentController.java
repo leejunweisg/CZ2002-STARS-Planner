@@ -1,4 +1,4 @@
-package controllers;
+package Controller;
 
 import FileManager.DataContainer;
 import FileManager.FileManager;
@@ -126,6 +126,37 @@ public class StudentController {
         return sb.toString();
     }
 
+    public String printWaitListedCourse(String username){
+        Student stud = dc.getStudentByUsername(username);
+
+        if ((stud.getWaitlisted().size()) <= 0)
+            return null;
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Index i: stud.getWaitlisted()) {
+            sb.append(i);
+            sb.append("Status: ").append("IN WAITLIST\n");
+        }
+        return sb.toString();
+
+    }
+
+    public String printRegisteredCourse(String username){
+        Student stud = dc.getStudentByUsername(username);
+
+        if ((stud.getRegistered().size()) <= 0)
+            return null;
+        StringBuilder sb = new StringBuilder();
+
+        for (Index i: stud.getRegistered()) {
+            sb.append(i);
+            sb.append("Status: ").append("REGISTERED\n");
+        }
+        return sb.toString();
+
+    }
+
     public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
@@ -232,5 +263,13 @@ public class StudentController {
     private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
         return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
+
+    public void printAllCourses(){
+        System.out.println("-----------All Courses-----------");
+        for(int x = 0; x<dc.getCourseList().size(); x++) {
+            System.out.println(dc.getCourseList().get(x).getIndexes().toString().replaceAll("(^\\[|\\]$)", ""));
+        }
+    }
+
 
 }

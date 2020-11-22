@@ -1,10 +1,10 @@
-package app;
+package App;
 
 import FileManager.DataContainer;
 import FileManager.FileManager;
-import controllers.LoginController;
-import controllers.StaffController;
-import controllers.StudentController;
+import Controller.LoginController;
+import Controller.StaffController;
+import Controller.StudentController;
 
 import java.io.Console;
 import java.time.LocalDate;
@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class STARSPlanner {
+
 
     private LoginController login_controller;
     private StudentController student_controller;
@@ -68,6 +69,7 @@ public class STARSPlanner {
 
         }while(true);
     }
+//---------------------------- ADMIN MENU ----------------------------//
 
     private void adminMenu(String username) {
         int choice=-1;
@@ -99,9 +101,13 @@ public class STARSPlanner {
                 case 5 -> checkIndexSlots();
                 case 6 -> printByIndex();
                 case 7 -> printByCourse();
+                case 0 -> logOut();
                 default -> System.out.println("Invalid option!");
             }
         }while(choice !=0);
+    }
+    private void logOut(){
+        System.out.println("Log out successful!");
     }
 
     private void addStudent(){
@@ -286,6 +292,8 @@ public class STARSPlanner {
     private void createCourse(){
         System.out.println("\n-> Create Course");
 
+        staff_controller.printAllCourses();
+
         String courseCode, courseName, courseSchool;
         int AU;
 
@@ -373,6 +381,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseCode(){
+        staff_controller.printAllCourses();
         String oldCode, newCode;
 
         // course code
@@ -401,6 +410,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseName(){
+        staff_controller.printAllCourses();
         String courseCode, newName;
 
         // course code
@@ -422,7 +432,7 @@ public class STARSPlanner {
 
     private void createIndex(){
         System.out.println("\n-> Create Index and Add to a Course");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -473,6 +483,7 @@ public class STARSPlanner {
 
     private void removeIndex(){
         System.out.println("\n-> Remove Index from a Course");
+        staff_controller.printAllCourses();
 
         String courseCode;
         int indexNumber;
@@ -490,7 +501,7 @@ public class STARSPlanner {
 
     private void addLessons(){
         System.out.println("\n-> Add Lessons to an Index");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -501,6 +512,9 @@ public class STARSPlanner {
         // index number
         indexNumber = inputIndex(courseCode);
         if (indexNumber == -1) return;
+
+        System.out.println("-----------All indexes-----------");
+        staff_controller.printAlIndex(courseCode,indexNumber);
 
         // loop to add new timeslot
         while (true) {
@@ -589,6 +603,9 @@ public class STARSPlanner {
             // add lesson
             System.out.println(staff_controller.addNewTimeSlot(courseCode, indexNumber, lessonType, dayOfWeek, location, startTime, endTime));
 
+            System.out.println("-----------Summary-----------" + "\n" + "\n");
+            staff_controller.printAlIndex(courseCode,indexNumber);
+
             // add another?
             System.out.print("Enter 'Y' to add another lesson: ");
             if (!sc.nextLine().toUpperCase().equals("Y"))
@@ -598,7 +615,7 @@ public class STARSPlanner {
 
     private void removeLessons(){
         System.out.println("-> Remove Lesson from Index");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -609,14 +626,15 @@ public class STARSPlanner {
         // index number
         indexNumber = inputIndex(courseCode);
         if (indexNumber == -1) return;
-
+        staff_controller.printAlIndex(courseCode,indexNumber);
         // call removeTimeSlot
         staff_controller.removeTimeSlot(courseCode,indexNumber);
+        staff_controller.printAlIndex(courseCode,indexNumber);
     }
 
     private void checkIndexSlots(){
         System.out.println("\n-> Check available slot for an index number");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -633,6 +651,7 @@ public class STARSPlanner {
 
     private void printByIndex() {
         System.out.println("\n-> Print Student list by index number");
+        staff_controller.printAllCourses();
 
         String courseCode;
         int indexNumber;
@@ -650,6 +669,7 @@ public class STARSPlanner {
 
     private void printByCourse(){
         System.out.println("\n-> Print Student list by Course");
+        staff_controller.printAllCourses();
 
         String courseCode;
 
@@ -660,6 +680,7 @@ public class STARSPlanner {
         System.out.println(staff_controller.printByCourse(courseCode));
     }
 
+//---------------------------- STUDENT MENU ----------------------------//
     private void studentMenu(String username){
         int choice=-1;
         do{
@@ -696,6 +717,7 @@ public class STARSPlanner {
 
     private void registerForCourse(String username){
         System.out.println("\n-> Register For a Course");
+        student_controller.printAllCourses();
 
         String courseCode;
         int indexNumber;
@@ -713,36 +735,53 @@ public class STARSPlanner {
 
     private void dropRegisteredCourse(String username){
         System.out.println("\n-> Drop a Registered Course");
+        while (true) {
+            if(student_controller.printRegisteredCourse(username) == null)
+            {
+                System.out.println("You are not registered in any courses.");
+                break;
+            }
+            System.out.println("----------Registered Courses----------");
+            System.out.println(student_controller.printRegisteredCourse(username));
 
-        String courseCode;
-        int indexNumber;
+            String courseCode;
+            int indexNumber;
 
-        // course code
-        courseCode = inputCourseCode();
-        if (courseCode == null) return;
+            // course code
+            courseCode = inputCourseCode();
+            if (courseCode == null) return;
 
-        // index number
-        indexNumber = inputIndex(courseCode);
-        if (indexNumber == -1) return;
+            // index number
+            indexNumber = inputIndex(courseCode);
+            if (indexNumber == -1) return;
 
-        System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+            System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+        }
+
     }
 
     private void dropWaitlistedCourse(String username){
         System.out.println("\n-> Drop a Waitlisted Course");
+        while(true) {
+            if(student_controller.printWaitListedCourse(username) == null){
+                System.out.println("You are not in wait list for any course!");
+                break;
+            }
+            System.out.println("----------Wait Listed Courses----------");
+            System.out.println(student_controller.printWaitListedCourse(username));
+            String courseCode;
+            int indexNumber;
 
-        String courseCode;
-        int indexNumber;
+            // course code
+            courseCode = inputCourseCode();
+            if (courseCode == null) return;
 
-        // course code
-        courseCode = inputCourseCode();
-        if (courseCode == null) return;
+            // index number
+            indexNumber = inputIndex(courseCode);
+            if (indexNumber == -1) return;
 
-        // index number
-        indexNumber = inputIndex(courseCode);
-        if (indexNumber == -1) return;
-
-        System.out.println(student_controller.dropWaitlistedCourse(username, courseCode, indexNumber));
+            System.out.println(student_controller.dropWaitlistedCourse(username, courseCode, indexNumber));
+        }
     }
 
     private void displayStudentCourse(String username){
@@ -752,6 +791,9 @@ public class STARSPlanner {
 
     private void changeIndex(String username){
         System.out.println("\n-> Change Index");
+        System.out.println("----------Registered Courses----------");
+        System.out.println(student_controller.printRegisteredCourse(username));
+
 
         String courseCode;
         int oldIndexNumber, newIndexNumber;
@@ -765,6 +807,8 @@ public class STARSPlanner {
         if (oldIndexNumber == -1) return;
 
         // new index number
+
+        student_controller.printAllCourses();
         while(true) {
             System.out.print("Enter New Index Number: ");
 
@@ -898,6 +942,5 @@ public class STARSPlanner {
         }
     }
 
-}
 
-//TODO ACCESS PERIOD ENFORCEMENT
+}

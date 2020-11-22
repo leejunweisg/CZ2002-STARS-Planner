@@ -47,4 +47,12 @@ public class TimeSlot implements Serializable {
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
+
+    @Override
+    public String toString() {
+        return "dayOfWeek: " + dayOfWeek +
+                ", location: '" + location + '\'' +
+                ", startTime: " + startTime +
+                ", endTime: " + endTime;
+    }
 }
