@@ -6,6 +6,7 @@ import model.*;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,9 +62,9 @@ public class StaffController {
             return "Not successful! The student was not found.";
     }
 
-    public String createCourse(String courseCode, String courseName, String courseSchool){
+    public String createCourse(String courseCode, String courseName, String courseSchool, int AU){
         School school = School.valueOf(courseSchool);
-        dc.getCourseList().add(new Course(courseCode, courseName, school));
+        dc.getCourseList().add(new Course(courseCode, courseName, school, AU));
 
         FileManager.write_all(dc);
         return "Course Added Successfully!";
@@ -140,67 +141,101 @@ public class StaffController {
         return "Lesson successfully added to course!";
     }
 
+    public void removeTimeSlot(String courseCode, int indexNum) {
 
-    public String removeTimeSlot(String courseCode, int indexNum){
+        while(true) {
+            int choice, removeChoice, choiceType = -1;
+            Course c = dc.getCourseByCode(courseCode);
+            Index i = dc.getCourseIndex(c, indexNum);
+            Scanner sc = new Scanner(System.in);
 
-        int choice, removeChoice;
-        Course c = dc.getCourseByCode("CZ2001");
-        Index i = dc.getCourseIndex(c, 101050);
-        Scanner sc = new Scanner(System.in);
+            System.out.println("\nType of lessons");
+            System.out.println("1. Lecture");
+            System.out.println("2. Tutorial");
+            System.out.println("3. Lab");
+            System.out.print("Select type of lesson to remove: ");
 
+            try {
+                choiceType = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+                continue;
+            }
 
-        System.out.println("--------Current Added Lessons--------");
-        System.out.println("Course: " + i.getCourse().getCourse_code());
-        System.out.println("-------------------------------------");
-        System.out.println("LECTURE");
-
-        for(int x =0; x<i.getAllSlots().size();x++) // for LECTURE
-        {
-            System.out.println(x+1+ ". ");
-            System.out.println("day of week: "+i.getLessons().get(LessonType.LEC).get(x).getDayOfWeek());
-            System.out.println("start time: "+ i.getLessons().get(LessonType.LEC).get(x).getStartTime());
-            System.out.println("end time: " + i.getLessons().get(LessonType.LEC).get(x).getEndTime());
-            System.out.println("location: " + i.getLessons().get(LessonType.LEC).get(x).getLocation());
-        }
-        System.out.println("TUTORIAL");
-
-        if(i.getLessons().get(LessonType.TUT).isEmpty()){
-            System.out.println("No Tutorial found");;
-        }
-        else {
-            for (int x = 0; x < i.getAllSlots().size(); x++) // for TUTORIAL
-            {
-                System.out.println(x + 1 + ". ");
-                System.out.println("day of week: " + i.getLessons().get(LessonType.TUT).get(x).getDayOfWeek());
-                System.out.println("start time: " + i.getLessons().get(LessonType.TUT).get(x).getStartTime());
-                System.out.println("end time: " + i.getLessons().get(LessonType.TUT).get(x).getEndTime());
-                System.out.println("location: " + i.getLessons().get(LessonType.TUT).get(x).getLocation());
+            switch (choiceType) {
+                case 1 -> {
+                    try {
+                        System.out.println("--------Current Lectures--------");
+                        if (i.getLessons().get(LessonType.LEC).isEmpty()) {
+                            System.out.println("No lectures found");
+                        } else {
+                            for (int x = 0; x < i.getLecSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.LEC).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            i.getLessons().get(LessonType.LEC).remove(removeChoice);
+                            System.out.println("Removed Lecture session successfully!");
+                            FileManager.write_all(dc);
+                            return;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                case 2 -> {
+                    try {
+                        System.out.println("--------Current Tutorials--------");
+                        if (i.getLessons().get(LessonType.TUT).isEmpty()) {
+                            System.out.println("No tutorials found");
+                        } else {
+                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.TUT).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            i.getLessons().get(LessonType.TUT).remove(removeChoice);
+                            System.out.println("Removed Tutorial session successfully!");
+                            FileManager.write_all(dc);
+                            return;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                case 3 -> {
+                    try {
+                        System.out.println("--------Current Labs--------");
+                        if (i.getLessons().get(LessonType.LAB).isEmpty()) {
+                            System.out.println("No labs found");
+                        } else {
+                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.LAB).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            i.getLessons().get(LessonType.LAB).remove(removeChoice);
+                            System.out.println("Removed Lab session successfully!");
+                            FileManager.write_all(dc);
+                            return;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                default -> System.out.println("Invalid option, try again!");
             }
         }
-        System.out.println("LAB");
-
-        if(i.getLessons().get(LessonType.LAB).isEmpty()){
-            System.out.println("No Lab found");;
-        }
-        else {
-            for (int x = 0; x < i.getAllSlots().size(); x++) // for LABS
-            {
-                System.out.println(x + 1 + ". ");
-
-                System.out.println("day of week: " + i.getLessons().get(LessonType.LAB).get(x).getDayOfWeek());
-                System.out.println("start time: " + i.getLessons().get(LessonType.LAB).get(x).getStartTime());
-                System.out.println("end time: " + i.getLessons().get(LessonType.LAB).get(x).getEndTime());
-                System.out.println("location: " + i.getLessons().get(LessonType.LAB).get(x).getLocation());
-            }
-        }
-        System.out.println("Select which to remove (1,2,3...): ");
-        choice = sc.nextInt();
-        removeChoice = choice - 1;
-        i.getLessons().get(LessonType.LEC).remove(removeChoice);
-        return "removed successfully!";
     }
-
-
 
     public String checkIndexSlot(String courseCode, int indexNumber){
         // retrieve the course
@@ -210,7 +245,7 @@ public class StaffController {
         Index i = dc.getCourseIndex(c, indexNumber);
 
         // return string
-        return String.format("\nAvailable: %d\n" + "Total: %d\n" + "In waitlist: %d",
+        return String.format("\nAvailable slots: %d\n" + "Total slots: %d\n" + "In waitlist: %d",
                 i.getVacancies(), i.getMax_capacity(), i.getWaitlistedStudents().size());
     }
 
@@ -224,14 +259,13 @@ public class StaffController {
         // construct string
         if (!i.getEnrolledStudents().isEmpty()) {
             StringBuilder sb;
-            sb = new StringBuilder("All registered students:\n");
+            sb = new StringBuilder("\nAll registered students:\n");
             for (Student stud : i.getEnrolledStudents())
                 sb.append(stud).append("\n");
 
             return sb.toString();
         }else
             return "There are no students registered for this index!";
-
     }
 
     public String printByCourse(String courseCode){
@@ -241,7 +275,7 @@ public class StaffController {
 
         StringBuilder sb;
         int count = 0;
-        sb = new StringBuilder("All registered students:\n");
+        sb = new StringBuilder("\nAll registered students:\n");
         if (c != null)
             for (Index i : c.getIndexes())
                 for (Student stud : i.getEnrolledStudents()) {

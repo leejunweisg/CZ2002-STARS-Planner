@@ -23,24 +23,32 @@ public class StudentController {
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
 
-        // Check if student already registered for this course
+        // check if student already registered for this course
         for (Index i: stud.getRegistered())
             if (i.getCourse() == c)
                 return "You are already registered for this course!";
 
-        // Check if student already waitlisted for this course
+        // check if student already waitlisted for this course
         for (Index i: stud.getWaitlisted())
             if (i.getCourse() == c)
                 return "You are currently in the waitlist for this course!";
 
+        // check AUs quota
+        int current_AU=0;
+        for (Index index : stud.getRegistered()) current_AU+=index.getCourse().getAU(); // sum registered AU
+        for (Index index : stud.getWaitlisted()) current_AU+=index.getCourse().getAU(); // sum waitlisted AU
+        if (stud.getMaximumAUs() - current_AU < c.getAU())
+            return String.format("Registration unsuccessful due to insufficient AUs. You have spent %d AUs from registered and waitlisted courses.",current_AU);
+
+        // get index
         Index i = dc.getCourseIndex(c, indexNumber);
 
-        // time clash for registered course
+        // check time clash for registered course
         for (Index idx: stud.getRegistered())
             if (indexClashed(i, idx))
                 return "Registration unsuccessful, the index clashed with another registered course!";
 
-        // time clash for waitlisted course
+        // check time clash for waitlisted course
         for (Index idx: stud.getWaitlisted())
             if (indexClashed(i, idx))
                 return "Registration unsuccessful, the index clashed with another course in your waitlist!";

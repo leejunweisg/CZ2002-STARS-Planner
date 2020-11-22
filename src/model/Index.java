@@ -1,7 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -96,9 +95,20 @@ public class Index implements Serializable {
                 "Index: " + index_number + "\n";
     }
 
-    // simple helper functions (not considered as business logic)
     public int getVacancies(){
         return max_capacity - enrolledStudents.size();
+    }
+
+    public ArrayList<TimeSlot> getLecSlots(){
+        return new ArrayList<>(lessons.get(LessonType.LEC));
+    }
+
+    public ArrayList<TimeSlot> getTutSlots(){
+        return new ArrayList<>(lessons.get(LessonType.TUT));
+    }
+
+    public ArrayList<TimeSlot> getLabSlots(){
+        return new ArrayList<>(lessons.get(LessonType.LAB));
     }
 
 }

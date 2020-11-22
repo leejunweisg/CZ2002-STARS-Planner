@@ -59,15 +59,17 @@ public class DataContainer implements Serializable {
         studentList.add(stud3);
 
         // hardcoded CZ2001, and its indexes
-        Course c1 = new Course("CZ2001", "Algorithms", School.SCSE);
+        Course c1 = new Course("CZ2001", "Algorithms", School.SCSE, 3);
 
         // hardcoded indexes/time for cz2001
         Index i1 = new Index(c1, 101050, 1);
         TimeSlot t1 = new TimeSlot(1,"N4", LocalTime.of(8,30), LocalTime.of(9,30));
+        TimeSlot t4 = new TimeSlot(3,"N4", LocalTime.of(8,30), LocalTime.of(9,30));
         i1.getLessons().get(LessonType.LEC).add(t1);
+        i1.getLessons().get(LessonType.LEC).add(t4);
 
         Index i2 = new Index(c1, 101060, 5);
-        TimeSlot t2 = new TimeSlot(1,"N8", LocalTime.of(8,30), LocalTime.of(9,30));
+        TimeSlot t2 = new TimeSlot(2,"N8", LocalTime.of(8,30), LocalTime.of(9,30));
         i2.getLessons().get(LessonType.LEC).add(t2);
 
         // add indexes to c2001
@@ -82,7 +84,7 @@ public class DataContainer implements Serializable {
         stud2.getRegistered().add(i2);
 
         // hardcode cz2001, no index
-        Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE);
+        Course c2 = new Course("CZ3001", "Advanced Computer Architecture", School.SCSE, 3);
         Index i3 = new Index(c2, 102050, 5);
         TimeSlot t3 = new TimeSlot(1,"N6", LocalTime.of(9,0), LocalTime.of(10,0));
         i3.getLessons().get(LessonType.LEC).add(t3);
@@ -142,7 +144,7 @@ public class DataContainer implements Serializable {
 
     public boolean existEmail(String email){
         for (Student stud: studentList)
-            if (stud.getEmail().equals(email))
+            if (stud.getEmail().toUpperCase().equals(email.toUpperCase()))
                 return true;
         return false;
     }

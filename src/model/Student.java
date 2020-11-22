@@ -10,6 +10,7 @@ public class Student extends User{
     private LocalDate matriculation_date;
     private LocalDateTime startPeriod;
     private LocalDateTime endPeriod;
+    private int maximumAUs;
 
     private ArrayList<Index> registered;
     private ArrayList<Index> waitlisted;
@@ -19,6 +20,7 @@ public class Student extends User{
         this.matric_number = matric_number;
         this.matriculation_date = matriculation_date;
         this.email = email;
+        this.maximumAUs = 21;
 
         // set default start and end period to current time
         this.startPeriod = LocalDateTime.now();
@@ -83,6 +85,14 @@ public class Student extends User{
 
     public void setWaitlisted(ArrayList<Index> waitlisted) {
         this.waitlisted = waitlisted;
+    }
+
+    public int getMaximumAUs() {
+        return maximumAUs;
+    }
+
+    public void setMaximumAUs(int maximumAUs) {
+        this.maximumAUs = maximumAUs;
     }
 
     @Override

@@ -7,18 +7,17 @@ public class Course implements Serializable {
     private String course_code;
     private String course_name;
     private School school;
+    private int AU;
 
     // holds a list of indexes that this course has
     private ArrayList<Index> indexes;
 
-    public Course(){
-
-    }
-    public Course(String course_code, String course_name, School school) {
+    public Course(String course_code, String course_name, School school, int AU) {
         this.course_code = course_code;
         this.course_name = course_name;
         this.school = school;
         this.indexes = new ArrayList<>();
+        this.AU = AU;
     }
 
     public String getCourse_code() {
@@ -53,5 +52,11 @@ public class Course implements Serializable {
         this.indexes = indexes;
     }
 
+    public int getAU() {
+        return AU;
+    }
 
+    public void setAU(int AU) {
+        this.AU = AU;
+    }
 }
