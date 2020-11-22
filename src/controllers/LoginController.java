@@ -6,6 +6,7 @@ import model.Student;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class LoginController {
@@ -23,7 +24,10 @@ public class LoginController {
 
         for (Student stud : dc.getStudentList())
             if (stud.getUsername().equals(username) && Arrays.equals(stud.getPasswordHash(),hash(password)))
-                return 2;
+                if (LocalDateTime.now().isAfter(stud.getStartPeriod()) && LocalDateTime.now().isBefore(stud.getEndPeriod()))
+                    return 2; // within access period
+                else
+                    return 3; // not in access period
 
         // no username/password pair found
         return 0;

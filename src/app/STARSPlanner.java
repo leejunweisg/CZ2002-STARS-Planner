@@ -63,6 +63,7 @@ public class STARSPlanner {
                 case 0 -> System.out.println("Invalid username or password!");
                 case 1 -> adminMenu(username);
                 case 2 -> studentMenu(username);
+                case 3 -> System.out.println("You are not allowed to access STARS at this time!");
             }
 
         }while(true);
