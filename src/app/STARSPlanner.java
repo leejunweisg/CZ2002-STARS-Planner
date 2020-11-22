@@ -670,9 +670,40 @@ public class STARSPlanner {
     }
 
     private void removeLessons(){
-        //TODO Remove lesson
+        String courseCode;
+        int indexNum;
+        while(true) {
+            System.out.println("---------Remove Lesson---------");
+            System.out.println("Enter Course code: ");
+            courseCode = sc.nextLine().toUpperCase();
+            Pattern pattern = Pattern.compile("^[A-Z]{2}[0-9]{4}$");
+            Matcher matcher = pattern.matcher(courseCode);
 
-        //staff_controller.removeTimeSlot(xxx);
+            if (!matcher.matches())
+                System.out.println("Invalid course code!");
+            else if(!data_container.existCourse(courseCode))
+                System.out.println("Course code is not found!");
+            else
+                break;
+        }
+        System.out.println("Enter index Number");
+        while(true) {
+            try{
+                indexNum = Integer.parseInt(sc.nextLine());
+            }catch (Exception e){
+                System.out.println("Invalid index number!");
+                continue;
+            }
+
+            // check if index number exists in the course
+            if (!data_container.existIndexInCourse(courseCode, indexNum)) {
+                System.out.println("That index number does not exist in the course!");
+                return;
+            }
+            break;
+        }
+
+        staff_controller.removeTimeSlot(courseCode,indexNum);
     }
 
     private void checkIndexSlots(){
