@@ -157,23 +157,23 @@ public class StudentController {
 
     }
 
-    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
-        Student stud = dc.getStudentByUsername(username);
-        Course c = dc.getCourseByCode(courseCode);
-        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
-        Index newIndex = dc.getCourseIndex(c, newIndexNum);
-
-        // if student is indeed registered in the old index
-        if (stud.getRegistered().contains(oldIndex))
-            if (newIndex.getVacancies() > 0){
-                deregisterStudent(oldIndex, stud);
-                registerStudent(newIndex, stud);
-                FileManager.write_all(dc);
-                return "Index successfully changed!";
-            }
-
-        return "You are not registered in that index!";
-    }
+//    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
+//        Student stud = dc.getStudentByUsername(username);
+//        Course c = dc.getCourseByCode(courseCode);
+//        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+//        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+//
+//        // if student is indeed registered in the old index
+//        if (stud.getRegistered().contains(oldIndex))
+//            if (newIndex.getVacancies() > 0){
+//                deregisterStudent(oldIndex, stud);
+//                registerStudent(newIndex, stud);
+//                FileManager.write_all(dc);
+//                return "Index successfully changed!";
+//            }
+//
+//        return "You are not registered in that index!";
+//    }
 
     private void deregisterStudent(Index i, Student stud){
         // remove student from index
@@ -269,6 +269,36 @@ public class StudentController {
         for(int x = 0; x<dc.getCourseList().size(); x++) {
             System.out.println(dc.getCourseList().get(x).getIndexes().toString().replaceAll("(^\\[|\\]$)", ""));
         }
+    }
+
+    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
+        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+
+        // if student is indeed registered in the old index
+        if (stud.getRegistered().contains(oldIndex))
+            if (newIndex.getVacancies() > 0){
+                deregisterStudent(oldIndex, stud);
+                registerStudent(newIndex, stud);
+                FileManager.write_all(dc);
+                return "Index successfully changed!";
+            }
+            else
+                return "New index has no vacancies!";
+
+        return "You are not registered in that index!";
+    }
+
+    public boolean checkRegisteredIndex(String username, String courseCode, int indexNumber){
+        Student stud = dc.getStudentByUsername(username);
+        for (Index i : stud.getRegistered()){
+            if (i.getCourse().getCourse_code().equals(courseCode) && i.getIndex_number() == indexNumber){
+                return true;
+            }
+        }
+        return false;
     }
 
 

@@ -261,10 +261,10 @@ public class STARSPlanner {
 
         // start period
         while (true){
-            System.out.print("Enter start of period (dd/mm/yyyy hh:mm am/pm): ");
+            System.out.print("Enter start of period (dd/mm/yyyy hh:mm): ");
             startPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
                 LocalDate.parse(startPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -277,7 +277,7 @@ public class STARSPlanner {
             System.out.print("Enter end of period (dd/mm/yyyy hh:mm am/pm): ");
             endPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
                 LocalDate.parse(endPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -628,8 +628,10 @@ public class STARSPlanner {
         if (indexNumber == -1) return;
         staff_controller.printAlIndex(courseCode,indexNumber);
         // call removeTimeSlot
-        staff_controller.removeTimeSlot(courseCode,indexNumber);
-        staff_controller.printAlIndex(courseCode,indexNumber);
+        boolean isSuccessful = staff_controller.removeTimeSlot(courseCode,indexNumber);
+
+        if (isSuccessful)
+            staff_controller.printAlIndex(courseCode,indexNumber);
     }
 
     private void checkIndexSlots(){
@@ -756,6 +758,7 @@ public class STARSPlanner {
             if (indexNumber == -1) return;
 
             System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+            break;
         }
 
     }
@@ -789,11 +792,63 @@ public class STARSPlanner {
         System.out.println(student_controller.displayStudentCourse(username));
     }
 
+//    private void changeIndex(String username){
+//        System.out.println("\n-> Change Index");
+//        System.out.println("----------Registered Courses----------");
+//        System.out.println(student_controller.printRegisteredCourse(username));
+//
+//
+//        String courseCode;
+//        int oldIndexNumber, newIndexNumber;
+//
+//        // course code
+//        courseCode = inputCourseCode();
+//        if (courseCode == null) return;
+//
+//        // old index number
+//        oldIndexNumber = inputIndex(courseCode);
+//        if (oldIndexNumber == -1) return;
+//
+//        // new index number
+//
+//        student_controller.printAllCourses();
+//        while(true) {
+//            System.out.print("Enter New Index Number: ");
+//
+//            // ensure user input is a valid index number in the right format
+//            try{
+//                newIndexNumber = Integer.parseInt(sc.nextLine());
+//            }catch (Exception e){
+//                System.out.println("Invalid index number!");
+//                continue;
+//            }
+//
+//            // check if index number exists in the course
+//            if (oldIndexNumber == newIndexNumber) {
+//                System.out.println("Old index cannot be the same as new index!");
+//                return;
+//            }else if (!data_container.existIndexInCourse(courseCode, newIndexNumber)) {
+//                System.out.println("That index number does not exist in the course!");
+//                return;
+//            }
+//            break;
+//        }
+//
+//        System.out.println(student_controller.changeIndex(username, courseCode, oldIndexNumber, newIndexNumber));
+//    }
+
     private void changeIndex(String username){
         System.out.println("\n-> Change Index");
         System.out.println("----------Registered Courses----------");
-        System.out.println(student_controller.printRegisteredCourse(username));
 
+        String registeredCourses = student_controller.printRegisteredCourse(username);
+
+        if (registeredCourses == null){
+            System.out.println("No registered courses!");
+            return;
+        }
+        else
+            System.out.println(registeredCourses);
 
         String courseCode;
         int oldIndexNumber, newIndexNumber;
@@ -806,6 +861,10 @@ public class STARSPlanner {
         oldIndexNumber = inputIndex(courseCode);
         if (oldIndexNumber == -1) return;
 
+        if (!student_controller.checkRegisteredIndex(username, courseCode, oldIndexNumber)){
+            System.out.println("You are not registered in this course index!");
+            return;
+        }
         // new index number
 
         student_controller.printAllCourses();
@@ -841,8 +900,17 @@ public class STARSPlanner {
         System.out.print("USERNAME: ");
         String username2 = sc.nextLine().toUpperCase();
 
-        System.out.print("PASSWORD: ");
-        String password2 = sc.nextLine();
+//        System.out.print("PASSWORD: ");
+//        String password2 = sc.nextLine();
+
+        Console cn = System.console();
+        String password2;
+        if (cn!=null)
+            password2 = new String(cn.readPassword("PASSWORD: "));
+        else {
+            System.out.print("PASSWORD (unsupported terminal, password not masked): ");
+            password2 = sc.nextLine();
+        }
 
         if (username.equals(username2)) {
             System.out.println("You can't swap with yourself!");

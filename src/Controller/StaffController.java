@@ -39,7 +39,8 @@ public class StaffController {
 
     public String setStudentAccess(String matric_number, String startPeriod,String endPeriod){
         // parse dates
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
+
         LocalDateTime start = LocalDateTime.parse(startPeriod, formatter);
         LocalDateTime end = LocalDateTime.parse(endPeriod, formatter);
 
@@ -141,101 +142,101 @@ public class StaffController {
         return "Lesson successfully added to course!";
     }
 
-    public void removeTimeSlot(String courseCode, int indexNum) {
-
-        while(true) {
-            int choice, removeChoice, choiceType = -1;
-            Course c = dc.getCourseByCode(courseCode);
-            Index i = dc.getCourseIndex(c, indexNum);
-            Scanner sc = new Scanner(System.in);
-
-            System.out.println("\nType of lessons");
-            System.out.println("1. Lecture");
-            System.out.println("2. Tutorial");
-            System.out.println("3. Lab");
-            System.out.print("Select type of lesson (1,2,3) to remove: ");
-
-            try {
-                choiceType = Integer.parseInt(sc.nextLine());
-            } catch (Exception e) {
-                System.out.println("Invalid input!");
-                continue;
-            }
-
-            switch (choiceType) {
-                case 1 -> {
-                    try {
-                        System.out.println("--------Current Lectures--------");
-                        if (i.getLessons().get(LessonType.LEC).isEmpty()) {
-                            System.out.println("No lectures found");
-                        } else {
-                            for (int x = 0; x < i.getLecSlots().size(); x++) {
-                                TimeSlot ts = i.getLessons().get(LessonType.LEC).get(x);
-                                System.out.print((x + 1) + ". ");
-                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
-                            }
-                            System.out.print("Select lesson to remove: ");
-                            choice = sc.nextInt();
-                            removeChoice = choice - 1;
-                            i.getLessons().get(LessonType.LEC).remove(removeChoice);
-                            System.out.println("Removed Lecture session successfully!");
-                            FileManager.write_all(dc);
-                            return;
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        System.out.println("Error! Please enter valid index");
-                    }
-                }
-                case 2 -> {
-                    try {
-                        System.out.println("--------Current Tutorials--------");
-                        if (i.getLessons().get(LessonType.TUT).isEmpty()) {
-                            System.out.println("No tutorials found");
-                        } else {
-                            for (int x = 0; x < i.getTutSlots().size(); x++) {
-                                TimeSlot ts = i.getLessons().get(LessonType.TUT).get(x);
-                                System.out.print((x + 1) + ". ");
-                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
-                            }
-                            System.out.print("Select lesson to remove: ");
-                            choice = sc.nextInt();
-                            removeChoice = choice - 1;
-                            i.getLessons().get(LessonType.TUT).remove(removeChoice);
-                            System.out.println("Removed Tutorial session successfully!");
-                            FileManager.write_all(dc);
-                            return;
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        System.out.println("Error! Please enter valid index");
-                    }
-                }
-                case 3 -> {
-                    try {
-                        System.out.println("--------Current Labs--------");
-                        if (i.getLessons().get(LessonType.LAB).isEmpty()) {
-                            System.out.println("No labs found");
-                        } else {
-                            for (int x = 0; x < i.getTutSlots().size(); x++) {
-                                TimeSlot ts = i.getLessons().get(LessonType.LAB).get(x);
-                                System.out.print((x + 1) + ". ");
-                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
-                            }
-                            System.out.print("Select lesson to remove: ");
-                            choice = sc.nextInt();
-                            removeChoice = choice - 1;
-                            i.getLessons().get(LessonType.LAB).remove(removeChoice);
-                            System.out.println("Removed Lab session successfully!");
-                            FileManager.write_all(dc);
-                            return;
-                        }
-                    } catch (IndexOutOfBoundsException e) {
-                        System.out.println("Error! Please enter valid index");
-                    }
-                }
-                default -> System.out.println("Invalid option, try again!");
-            }
-        }
-    }
+//    public void removeTimeSlot(String courseCode, int indexNum) {
+//
+//        while(true) {
+//            int choice, removeChoice, choiceType = -1;
+//            Course c = dc.getCourseByCode(courseCode);
+//            Index i = dc.getCourseIndex(c, indexNum);
+//            Scanner sc = new Scanner(System.in);
+//
+//            System.out.println("\nType of lessons");
+//            System.out.println("1. Lecture");
+//            System.out.println("2. Tutorial");
+//            System.out.println("3. Lab");
+//            System.out.print("Select type of lesson (1,2,3) to remove: ");
+//
+//            try {
+//                choiceType = Integer.parseInt(sc.nextLine());
+//            } catch (Exception e) {
+//                System.out.println("Invalid input!");
+//                continue;
+//            }
+//
+//            switch (choiceType) {
+//                case 1 -> {
+//                    try {
+//                        System.out.println("--------Current Lectures--------");
+//                        if (i.getLessons().get(LessonType.LEC).isEmpty()) {
+//                            System.out.println("No lectures found");
+//                        } else {
+//                            for (int x = 0; x < i.getLecSlots().size(); x++) {
+//                                TimeSlot ts = i.getLessons().get(LessonType.LEC).get(x);
+//                                System.out.print((x + 1) + ". ");
+//                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+//                            }
+//                            System.out.print("Select lesson to remove: ");
+//                            choice = sc.nextInt();
+//                            removeChoice = choice - 1;
+//                            i.getLessons().get(LessonType.LEC).remove(removeChoice);
+//                            System.out.println("Removed Lecture session successfully!");
+//                            FileManager.write_all(dc);
+//                            return;
+//                        }
+//                    } catch (IndexOutOfBoundsException e) {
+//                        System.out.println("Error! Please enter valid index");
+//                    }
+//                }
+//                case 2 -> {
+//                    try {
+//                        System.out.println("--------Current Tutorials--------");
+//                        if (i.getLessons().get(LessonType.TUT).isEmpty()) {
+//                            System.out.println("No tutorials found");
+//                        } else {
+//                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+//                                TimeSlot ts = i.getLessons().get(LessonType.TUT).get(x);
+//                                System.out.print((x + 1) + ". ");
+//                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+//                            }
+//                            System.out.print("Select lesson to remove: ");
+//                            choice = sc.nextInt();
+//                            removeChoice = choice - 1;
+//                            i.getLessons().get(LessonType.TUT).remove(removeChoice);
+//                            System.out.println("Removed Tutorial session successfully!");
+//                            FileManager.write_all(dc);
+//                            return;
+//                        }
+//                    } catch (IndexOutOfBoundsException e) {
+//                        System.out.println("Error! Please enter valid index");
+//                    }
+//                }
+//                case 3 -> {
+//                    try {
+//                        System.out.println("--------Current Labs--------");
+//                        if (i.getLessons().get(LessonType.LAB).isEmpty()) {
+//                            System.out.println("No labs found");
+//                        } else {
+//                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+//                                TimeSlot ts = i.getLessons().get(LessonType.LAB).get(x);
+//                                System.out.print((x + 1) + ". ");
+//                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+//                            }
+//                            System.out.print("Select lesson to remove: ");
+//                            choice = sc.nextInt();
+//                            removeChoice = choice - 1;
+//                            i.getLessons().get(LessonType.LAB).remove(removeChoice);
+//                            System.out.println("Removed Lab session successfully!");
+//                            FileManager.write_all(dc);
+//                            return;
+//                        }
+//                    } catch (IndexOutOfBoundsException e) {
+//                        System.out.println("Error! Please enter valid index");
+//                    }
+//                }
+//                default -> System.out.println("Invalid option, try again!");
+//            }
+//        }
+//    }
 
     public String checkIndexSlot(String courseCode, int indexNumber){
         // retrieve the course
@@ -343,6 +344,121 @@ public class StaffController {
             }
         }
     }
+
+    public boolean removeTimeSlot(String courseCode, int indexNum) {
+
+        while(true) {
+            int choice, removeChoice, choiceType = -1;
+            Course c = dc.getCourseByCode(courseCode);
+            Index i = dc.getCourseIndex(c, indexNum);
+            Scanner sc = new Scanner(System.in);
+
+            System.out.println("\nType of lessons");
+            System.out.println("1. Lecture");
+            System.out.println("2. Tutorial");
+            System.out.println("3. Lab");
+            System.out.println("0. Back");
+            System.out.print("Select type of lesson (1,2,3) to remove: ");
+
+            try {
+                choiceType = Integer.parseInt(sc.nextLine());
+            } catch (Exception e) {
+                System.out.println("Invalid input!");
+                continue;
+            }
+
+            switch (choiceType) {
+                case 1 -> {
+                    try {
+                        System.out.println("--------Current Lectures--------");
+                        if (i.getLessons().get(LessonType.LEC).isEmpty()) {
+                            System.out.println("No lectures found");
+                        } else {
+                            for (int x = 0; x < i.getLecSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.LEC).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.println("0. Back");
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            if (removeChoice == -1){
+                                continue;
+                            }
+                            i.getLessons().get(LessonType.LEC).remove(removeChoice);
+                            System.out.println("Removed Lecture session successfully!");
+                            FileManager.write_all(dc);
+                            return true;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                case 2 -> {
+                    try {
+                        System.out.println("--------Current Tutorials--------");
+                        if (i.getLessons().get(LessonType.TUT).isEmpty()) {
+                            System.out.println("No tutorials found");
+                        } else {
+                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.TUT).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.println("0. Back");
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            if (removeChoice == -1){
+                                continue;
+                            }
+                            i.getLessons().get(LessonType.TUT).remove(removeChoice);
+                            System.out.println("Removed Tutorial session successfully!");
+                            FileManager.write_all(dc);
+                            return true;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                case 3 -> {
+                    try {
+                        System.out.println("--------Current Labs--------");
+                        if (i.getLessons().get(LessonType.LAB).isEmpty()) {
+                            System.out.println("No labs found");
+                        } else {
+                            for (int x = 0; x < i.getTutSlots().size(); x++) {
+                                TimeSlot ts = i.getLessons().get(LessonType.LAB).get(x);
+                                System.out.print((x + 1) + ". ");
+                                System.out.println(DayOfWeek.of(ts.getDayOfWeek()) + " (" + ts.getStartTime() + "-" + ts.getEndTime() + ") Location: " + ts.getLocation());
+                            }
+                            System.out.println("0. Back");
+                            System.out.print("Select lesson to remove: ");
+                            choice = sc.nextInt();
+                            removeChoice = choice - 1;
+                            if (removeChoice == -1){
+                                continue;
+                            }
+                            i.getLessons().get(LessonType.LAB).remove(removeChoice);
+                            System.out.println("Removed Lab session successfully!");
+                            FileManager.write_all(dc);
+                            return true;
+                        }
+                    } catch (IndexOutOfBoundsException e) {
+                        System.out.println("Error! Please enter valid index");
+                    }
+                }
+                case 0 -> {
+                    System.out.println("Going back to previous menu...");
+                    return false;
+                }
+                default -> System.out.println("Invalid option, try again!");
+            }
+        }
+    }
+
+
 
 
 

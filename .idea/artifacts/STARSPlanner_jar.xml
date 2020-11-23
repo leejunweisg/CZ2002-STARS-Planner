@@ -2,6 +2,9 @@
   <artifact type="jar" name="STARSPlanner:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/STARSPlanner_jar</output-path>
     <root id="archive" name="STARSPlanner.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
       <element id="module-output" name="STARSPlanner" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javax.activation-1.2.0.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$PROJECT_DIR$/lib/javax.mail.jar" path-in-jar="/" />
