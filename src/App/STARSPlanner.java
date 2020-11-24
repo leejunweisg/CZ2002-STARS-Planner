@@ -292,8 +292,7 @@ public class STARSPlanner {
     private void createCourse(){
         System.out.println("\n-> Create Course");
 
-        staff_controller.printAllCourses();
-
+        staff_controller.printAddedCourses();
         String courseCode, courseName, courseSchool;
         int AU;
 
@@ -347,6 +346,7 @@ public class STARSPlanner {
             }
         }
         System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool, AU));
+        staff_controller.printAddedCourses();
     }
 
     private void updateCourse(){
@@ -381,7 +381,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseCode(){
-        staff_controller.printAllCourses();
+        staff_controller.printAddedCourses();
         String oldCode, newCode;
 
         // course code
@@ -410,7 +410,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseName(){
-        staff_controller.printAllCourses();
+        staff_controller.printAddedCourses();
         String courseCode, newName;
 
         // course code
@@ -432,7 +432,7 @@ public class STARSPlanner {
 
     private void createIndex(){
         System.out.println("\n-> Create Index and Add to a Course");
-        staff_controller.printAllCourses();
+        staff_controller.printAddedCourses();
         String courseCode;
         int indexNumber;
 
@@ -567,10 +567,10 @@ public class STARSPlanner {
             // start time
             LocalTime st;
             while (true){
-                System.out.print("Enter start time (hh:mm am/pm): ");
+                System.out.print("Enter start time (hh:mm): ");
                 try{
                     startTime = sc.nextLine();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
                     st = LocalTime.parse(startTime, formatter);
                     if (st.getMinute()!=0 && st.getMinute()!= 30)
                         System.out.println("Time must be in 30-minute intervals");
@@ -584,10 +584,10 @@ public class STARSPlanner {
             // end time
             LocalTime et;
             while (true){
-                System.out.print("Enter end time (hh:mm am/pm): ");
+                System.out.print("Enter end time (hh:mm): ");
                 try{
                     endTime = sc.nextLine();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
                     et = LocalTime.parse(endTime, formatter);
                     if (st.getMinute()!=0 && st.getMinute()!= 30)
                         System.out.println("Time must be in 30-minute intervals");

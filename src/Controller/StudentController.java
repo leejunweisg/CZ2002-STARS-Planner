@@ -195,7 +195,7 @@ public class StudentController {
             // TODO email notification
             NotificationInterface ni = new Email();
             String message = String.format("You have successfully registered for:\n%s %s\nIndex: %d", i.getCourse().getCourse_code(), i.getCourse().getCourse_name(), i.getIndex_number());
-            ni.sendNotification("NTU STARS Registration Notification", message, stud.getEmail());
+            ni.sendNotification("NTU STARS Registration Notification", message, front.getEmail());
 
             FileManager.write_all(dc);
         }
