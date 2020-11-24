@@ -274,7 +274,7 @@ public class STARSPlanner {
 
         // end period
         while (true){
-            System.out.print("Enter end of period (dd/mm/yyyy hh:mm am/pm): ");
+            System.out.print("Enter end of period (dd/mm/yyyy hh:mm): ");
             endPeriod = sc.nextLine();
             try{
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
