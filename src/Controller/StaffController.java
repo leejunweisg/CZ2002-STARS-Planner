@@ -122,7 +122,7 @@ public class StaffController {
         Course c = dc.getCourseByCode(coursecode);
         Index i = dc.getCourseIndex(c, indexNumber);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
         LocalTime st = LocalTime.parse(startTime, formatter);
         LocalTime et = LocalTime.parse(endTime, formatter);
         TimeSlot ts = new TimeSlot(dayOfWeek, location, st, et);
@@ -343,6 +343,14 @@ public class StaffController {
                 System.out.println(i.getLessons().get(LessonType.LAB).get(x));
             }
         }
+    }
+
+    public void printAddedCourses(){
+        System.out.println("-----------All Courses-----------");
+        for(int x = 0; x<dc.getCourseList().size(); x++) {
+            System.out.println("Course: "+dc.getCourseList().get(x).getCourse_code().replaceAll("(^\\[|\\]$)", "") + " " + dc.getCourseList().get(x).getCourse_name().replaceAll("(^\\[|\\]$)", ""));
+        }
+
     }
 
     public boolean removeTimeSlot(String courseCode, int indexNum) {

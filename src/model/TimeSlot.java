@@ -51,8 +51,8 @@ public class TimeSlot implements Serializable {
     @Override
     public String toString() {
         return "dayOfWeek: " + dayOfWeek +
-                ", location: '" + location + '\'' +
-                ", startTime: " + startTime +
-                ", endTime: " + endTime;
+                "| location: '" + location + '\'' +
+                "| startTime: " + startTime +
+                "| endTime: " + endTime;
     }
 }
