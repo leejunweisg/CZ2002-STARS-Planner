@@ -211,11 +211,8 @@ public class StaffController {
 
     public void printAllCourses(){
         System.out.println("-----------All Courses-----------");
-        for(int x = 0; x<dc.getCourseList().size(); x++) {
+        for(int x = 0; x<dc.getCourseList().size(); x++) 
             System.out.println(dc.getCourseList().get(x).toString());
-//            System.out.println(dc.getCourseList().get(x).getIndexes().toString().replaceAll("(^\\[|\\]$)", ""));
-
-        }
     }
 
     public void printAllIndex(String courseCode, int indexNumber){
