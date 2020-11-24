@@ -47,7 +47,7 @@ public class DataContainer implements Serializable {
         // hardcoded students
         Student stud1 = new Student("JLEE254", hash("password123"), "Lee Jun Wei", Gender.M,
                 "Singapore", LocalDate.of(1997, 5, 15), "U1922896C",
-                LocalDate.of(2019, 8, 1), "leejunweisgmaybe@gmail.com");
+                LocalDate.of(2019, 8, 1), "leejunwei.sg@gmail.com");
         Student stud2 = new Student("EDAN123", hash("password123"), "Edan Ang", Gender.M,
                 "Singapore", LocalDate.of(1997, 1, 1), "U1924567C",
                 LocalDate.of(2019, 8, 1), "edankbf@gmail.com" );

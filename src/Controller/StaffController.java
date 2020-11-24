@@ -210,7 +210,6 @@ public class StaffController {
     }
 
     public void printAllCourses(){
-        System.out.println("-----------All asdasd-----------");
         System.out.println("-----------All Courses-----------");
         for(int x = 0; x<dc.getCourseList().size(); x++) {
             System.out.println(dc.getCourseList().get(x).toString());
