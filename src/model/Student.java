@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +15,18 @@ public class Student extends User{
     private ArrayList<Index> registered;
     private ArrayList<Index> waitlisted;
 
+    /**
+     * Constructor for User Student
+     * @param username Username of student
+     * @param password Password of student
+     * @param fullname Full Name of student
+     * @param gender Gender of student in Enum
+     * @param nationality Nationality of student
+     * @param dob Date of birth of student
+     * @param matric_number Matriculation number of student
+     * @param matriculation_date Matriculation date of student
+     * @param email Email address of student
+     */
     public Student(String username, byte[] password, String fullname, Gender gender, String nationality, LocalDate dob, String matric_number, LocalDate matriculation_date, String email) {
         super(username, password, fullname, gender, nationality, dob);
         this.matric_number = matric_number;

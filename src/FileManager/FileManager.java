@@ -1,15 +1,6 @@
 package FileManager;
 
-import model.Course;
-import model.Gender;
-import model.Staff;
-import model.Student;
-import model.School;
-import model.Index;
-
 import java.io.*;
-import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class FileManager {
 

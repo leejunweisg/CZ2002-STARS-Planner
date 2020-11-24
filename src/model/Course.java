@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,6 +11,16 @@ public class Course implements Serializable {
 
     // holds a list of indexes that this course has
     private ArrayList<Index> indexes;
+
+    //New Constructor
+
+    /**
+     * Constructor for Courses
+     * @param course_code course code of each modules offered e.g(CZ002)
+     * @param course_name course name of ech modules offered e.g(Object Oriented Programming)
+     * @param school School of which course is located e.g(SCSE, MAE)
+     * @param AU Allocated Unit for each course
+     */
 
     public Course(String course_code, String course_name, School school, int AU) {
         this.course_code = course_code;
@@ -58,5 +68,14 @@ public class Course implements Serializable {
 
     public void setAU(int AU) {
         this.AU = AU;
+    }
+    
+    public String toString() {
+    	StringBuilder sb = new StringBuilder("Course: ");
+    	sb.append(course_code).append(" ").append(course_name).append("\nIndex: ");
+    	for (Index i: indexes) 
+    		sb.append(i.getIndex_number()).append(" ");
+    	sb.append("\n");
+    	return sb.toString();
     }
 }

@@ -31,7 +31,6 @@ public class Email implements NotificationInterface{
             message.setSubject(title);
             message.setText(body);
             Transport.send(message);
-            System.out.println("Email Notification sent!");
 
         } catch (MessagingException e) {
             e.printStackTrace();

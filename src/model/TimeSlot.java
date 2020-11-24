@@ -1,4 +1,4 @@
-package model;
+package Model;
 
 import java.io.Serializable;
 import java.time.LocalTime;
@@ -46,5 +46,13 @@ public class TimeSlot implements Serializable {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    @Override
+    public String toString() {
+        return "dayOfWeek: " + dayOfWeek +
+                "| location: '" + location + '\'' +
+                "| startTime: " + startTime +
+                "| endTime: " + endTime;
     }
 }

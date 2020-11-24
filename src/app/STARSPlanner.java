@@ -1,10 +1,10 @@
-package app;
+package App;
 
 import FileManager.DataContainer;
 import FileManager.FileManager;
-import controllers.LoginController;
-import controllers.StaffController;
-import controllers.StudentController;
+import Controller.LoginController;
+import Controller.StaffController;
+import Controller.StudentController;
 
 import java.io.Console;
 import java.time.LocalDate;
@@ -16,11 +16,12 @@ import java.util.regex.Pattern;
 
 public class STARSPlanner {
 
-    private LoginController login_controller;
-    private StudentController student_controller;
-    private StaffController staff_controller;
-    private DataContainer data_container;
-    private Scanner sc = new Scanner(System.in);
+
+    private final LoginController login_controller;
+    private final StudentController student_controller;
+    private final StaffController staff_controller;
+    private final DataContainer data_container;
+    private final Scanner sc = new Scanner(System.in);
 
     public STARSPlanner() {
         data_container = FileManager.read_all();
@@ -68,6 +69,7 @@ public class STARSPlanner {
 
         }while(true);
     }
+//---------------------------- ADMIN MENU ----------------------------//
 
     private void adminMenu(String username) {
         int choice=-1;
@@ -99,9 +101,13 @@ public class STARSPlanner {
                 case 5 -> checkIndexSlots();
                 case 6 -> printByIndex();
                 case 7 -> printByCourse();
+                case 0 -> logOut();
                 default -> System.out.println("Invalid option!");
             }
         }while(choice !=0);
+    }
+    private void logOut(){
+        System.out.println("Log out successful!");
     }
 
     private void addStudent(){
@@ -255,10 +261,10 @@ public class STARSPlanner {
 
         // start period
         while (true){
-            System.out.print("Enter start of period (dd/mm/yyyy hh:mm am/pm): ");
+            System.out.print("Enter start of period (dd/mm/yyyy hh:mm): ");
             startPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
                 LocalDate.parse(startPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -268,10 +274,10 @@ public class STARSPlanner {
 
         // end period
         while (true){
-            System.out.print("Enter end of period (dd/mm/yyyy hh:mm am/pm): ");
+            System.out.print("Enter end of period (dd/mm/yyyy hh:mm): ");
             endPeriod = sc.nextLine();
             try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy h:m a");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy H:m");
                 LocalDate.parse(endPeriod, formatter); //use LocalDate.parse to check if date format is valid
                 break;
             }catch(Exception e){
@@ -286,6 +292,7 @@ public class STARSPlanner {
     private void createCourse(){
         System.out.println("\n-> Create Course");
 
+        staff_controller.printAddedCourses();
         String courseCode, courseName, courseSchool;
         int AU;
 
@@ -339,6 +346,7 @@ public class STARSPlanner {
             }
         }
         System.out.println(staff_controller.createCourse(courseCode,courseName,courseSchool, AU));
+        staff_controller.printAddedCourses();
     }
 
     private void updateCourse(){
@@ -373,6 +381,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseCode(){
+        staff_controller.printAddedCourses();
         String oldCode, newCode;
 
         // course code
@@ -401,6 +410,7 @@ public class STARSPlanner {
     }
 
     private void updateCourseName(){
+        staff_controller.printAddedCourses();
         String courseCode, newName;
 
         // course code
@@ -422,7 +432,7 @@ public class STARSPlanner {
 
     private void createIndex(){
         System.out.println("\n-> Create Index and Add to a Course");
-
+        staff_controller.printAddedCourses();
         String courseCode;
         int indexNumber;
 
@@ -473,6 +483,7 @@ public class STARSPlanner {
 
     private void removeIndex(){
         System.out.println("\n-> Remove Index from a Course");
+        staff_controller.printAllCourses();
 
         String courseCode;
         int indexNumber;
@@ -490,7 +501,7 @@ public class STARSPlanner {
 
     private void addLessons(){
         System.out.println("\n-> Add Lessons to an Index");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -501,6 +512,9 @@ public class STARSPlanner {
         // index number
         indexNumber = inputIndex(courseCode);
         if (indexNumber == -1) return;
+
+        System.out.println("-----------All indexes-----------");
+        staff_controller.printAllIndex(courseCode,indexNumber);
 
         // loop to add new timeslot
         while (true) {
@@ -553,10 +567,10 @@ public class STARSPlanner {
             // start time
             LocalTime st;
             while (true){
-                System.out.print("Enter start time (hh:mm am/pm): ");
+                System.out.print("Enter start time (hh:mm): ");
                 try{
                     startTime = sc.nextLine();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
                     st = LocalTime.parse(startTime, formatter);
                     if (st.getMinute()!=0 && st.getMinute()!= 30)
                         System.out.println("Time must be in 30-minute intervals");
@@ -570,10 +584,10 @@ public class STARSPlanner {
             // end time
             LocalTime et;
             while (true){
-                System.out.print("Enter end time (hh:mm am/pm): ");
+                System.out.print("Enter end time (hh:mm): ");
                 try{
                     endTime = sc.nextLine();
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("h:m a");
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
                     et = LocalTime.parse(endTime, formatter);
                     if (st.getMinute()!=0 && st.getMinute()!= 30)
                         System.out.println("Time must be in 30-minute intervals");
@@ -589,6 +603,9 @@ public class STARSPlanner {
             // add lesson
             System.out.println(staff_controller.addNewTimeSlot(courseCode, indexNumber, lessonType, dayOfWeek, location, startTime, endTime));
 
+            System.out.println("-----------Summary-----------" + "\n" + "\n");
+            staff_controller.printAllIndex(courseCode,indexNumber);
+
             // add another?
             System.out.print("Enter 'Y' to add another lesson: ");
             if (!sc.nextLine().toUpperCase().equals("Y"))
@@ -598,7 +615,7 @@ public class STARSPlanner {
 
     private void removeLessons(){
         System.out.println("-> Remove Lesson from Index");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -609,14 +626,17 @@ public class STARSPlanner {
         // index number
         indexNumber = inputIndex(courseCode);
         if (indexNumber == -1) return;
-
+        staff_controller.printAllIndex(courseCode,indexNumber);
         // call removeTimeSlot
-        staff_controller.removeTimeSlot(courseCode,indexNumber);
+        boolean isSuccessful = staff_controller.removeTimeSlot(courseCode,indexNumber);
+
+        if (isSuccessful)
+            staff_controller.printAllIndex(courseCode,indexNumber);
     }
 
     private void checkIndexSlots(){
         System.out.println("\n-> Check available slot for an index number");
-
+        staff_controller.printAllCourses();
         String courseCode;
         int indexNumber;
 
@@ -633,6 +653,7 @@ public class STARSPlanner {
 
     private void printByIndex() {
         System.out.println("\n-> Print Student list by index number");
+        staff_controller.printAllCourses();
 
         String courseCode;
         int indexNumber;
@@ -650,6 +671,7 @@ public class STARSPlanner {
 
     private void printByCourse(){
         System.out.println("\n-> Print Student list by Course");
+        staff_controller.printAllCourses();
 
         String courseCode;
 
@@ -660,6 +682,7 @@ public class STARSPlanner {
         System.out.println(staff_controller.printByCourse(courseCode));
     }
 
+//---------------------------- STUDENT MENU ----------------------------//
     private void studentMenu(String username){
         int choice=-1;
         do{
@@ -697,6 +720,8 @@ public class STARSPlanner {
     private void registerForCourse(String username){
         System.out.println("\n-> Register For a Course");
 
+        student_controller.printAllCourses();
+
         String courseCode;
         int indexNumber;
 
@@ -713,45 +738,74 @@ public class STARSPlanner {
 
     private void dropRegisteredCourse(String username){
         System.out.println("\n-> Drop a Registered Course");
+        while (true) {
+            if(student_controller.printRegisteredCourse(username) == null)
+            {
+                System.out.println("You are not registered in any courses.");
+                break;
+            }
+            System.out.println("----------Registered Courses----------");
+            System.out.println(student_controller.printRegisteredCourse(username));
 
-        String courseCode;
-        int indexNumber;
+            String courseCode;
+            int indexNumber;
 
-        // course code
-        courseCode = inputCourseCode();
-        if (courseCode == null) return;
+            // course code
+            courseCode = inputCourseCode();
+            if (courseCode == null) return;
 
-        // index number
-        indexNumber = inputIndex(courseCode);
-        if (indexNumber == -1) return;
+            // index number
+            indexNumber = inputIndex(courseCode);
+            if (indexNumber == -1) return;
 
-        System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+            System.out.println(student_controller.dropRegisteredCourse(username, courseCode, indexNumber));
+            break;
+        }
+
     }
 
     private void dropWaitlistedCourse(String username){
         System.out.println("\n-> Drop a Waitlisted Course");
+        while(true) {
+            if(student_controller.printWaitListedCourse(username) == null){
+                System.out.println("You are not in wait list for any course!");
+                break;
+            }
+            System.out.println("----------Wait Listed Courses----------");
+            System.out.println(student_controller.printWaitListedCourse(username));
+            String courseCode;
+            int indexNumber;
 
-        String courseCode;
-        int indexNumber;
+            // course code
+            courseCode = inputCourseCode();
+            if (courseCode == null) return;
 
-        // course code
-        courseCode = inputCourseCode();
-        if (courseCode == null) return;
+            // index number
+            indexNumber = inputIndex(courseCode);
+            if (indexNumber == -1) return;
 
-        // index number
-        indexNumber = inputIndex(courseCode);
-        if (indexNumber == -1) return;
-
-        System.out.println(student_controller.dropWaitlistedCourse(username, courseCode, indexNumber));
+            System.out.println(student_controller.dropWaitlistedCourse(username, courseCode, indexNumber));
+        }
     }
 
     private void displayStudentCourse(String username){
         System.out.println("\n-> Registered/Waitlisted Courses");
         System.out.println(student_controller.displayStudentCourse(username));
     }
+    
 
     private void changeIndex(String username){
         System.out.println("\n-> Change Index");
+        System.out.println("----------Registered Courses----------");
+
+        String registeredCourses = student_controller.printRegisteredCourse(username);
+
+        if (registeredCourses == null){
+            System.out.println("No registered courses!");
+            return;
+        }
+        else
+            System.out.println(registeredCourses);
 
         String courseCode;
         int oldIndexNumber, newIndexNumber;
@@ -764,7 +818,13 @@ public class STARSPlanner {
         oldIndexNumber = inputIndex(courseCode);
         if (oldIndexNumber == -1) return;
 
+        if (!student_controller.checkRegisteredIndex(username, courseCode, oldIndexNumber)){
+            System.out.println("You are not registered in this course index!");
+            return;
+        }
         // new index number
+
+        student_controller.printAllCourses();
         while(true) {
             System.out.print("Enter New Index Number: ");
 
@@ -796,9 +856,15 @@ public class STARSPlanner {
         // login for the other student
         System.out.print("USERNAME: ");
         String username2 = sc.nextLine().toUpperCase();
-
-        System.out.print("PASSWORD: ");
-        String password2 = sc.nextLine();
+        
+        Console cn = System.console();
+        String password2;
+        if (cn!=null)
+            password2 = new String(cn.readPassword("PASSWORD: "));
+        else {
+            System.out.print("PASSWORD (unsupported terminal, password not masked): ");
+            password2 = sc.nextLine();
+        }
 
         if (username.equals(username2)) {
             System.out.println("You can't swap with yourself!");
@@ -898,6 +964,5 @@ public class STARSPlanner {
         }
     }
 
-}
 
-//TODO ACCESS PERIOD ENFORCEMENT
+}

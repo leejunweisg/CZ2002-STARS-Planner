@@ -1,13 +1,13 @@
-package controllers;
+package Controller;
 
 import FileManager.DataContainer;
 import FileManager.FileManager;
 import Notification.Email;
 import Notification.NotificationInterface;
-import model.Course;
-import model.Index;
-import model.Student;
-import model.TimeSlot;
+import Model.Course;
+import Model.Index;
+import Model.Student;
+import Model.TimeSlot;
 
 import java.util.ArrayList;
 
@@ -126,22 +126,35 @@ public class StudentController {
         return sb.toString();
     }
 
-    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
+    public String printWaitListedCourse(String username){
         Student stud = dc.getStudentByUsername(username);
-        Course c = dc.getCourseByCode(courseCode);
-        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
-        Index newIndex = dc.getCourseIndex(c, newIndexNum);
 
-        // if student is indeed registered in the old index
-        if (stud.getRegistered().contains(oldIndex))
-            if (newIndex.getVacancies() > 0){
-                deregisterStudent(oldIndex, stud);
-                registerStudent(newIndex, stud);
-                FileManager.write_all(dc);
-                return "Index successfully changed!";
-            }
+        if ((stud.getWaitlisted().size()) <= 0)
+            return null;
 
-        return "You are not registered in that index!";
+        StringBuilder sb = new StringBuilder();
+
+        for (Index i: stud.getWaitlisted()) {
+            sb.append(i);
+            sb.append("Status: ").append("IN WAITLIST\n");
+        }
+        return sb.toString();
+
+    }
+
+    public String printRegisteredCourse(String username){
+        Student stud = dc.getStudentByUsername(username);
+
+        if ((stud.getRegistered().size()) <= 0)
+            return null;
+        StringBuilder sb = new StringBuilder();
+
+        for (Index i: stud.getRegistered()) {
+            sb.append(i);
+            sb.append("Status: ").append("REGISTERED\n");
+        }
+        return sb.toString();
+
     }
 
     private void deregisterStudent(Index i, Student stud){
@@ -164,7 +177,7 @@ public class StudentController {
             // TODO email notification
             NotificationInterface ni = new Email();
             String message = String.format("You have successfully registered for:\n%s %s\nIndex: %d", i.getCourse().getCourse_code(), i.getCourse().getCourse_name(), i.getIndex_number());
-            ni.sendNotification("NTU STARS Registration Notification", message, stud.getEmail());
+            ni.sendNotification("NTU STARS Registration Notification", message, front.getEmail());
 
             FileManager.write_all(dc);
         }
@@ -232,5 +245,43 @@ public class StudentController {
     private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
         return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
+
+    public void printAllCourses(){
+        System.out.println("-----------All Courses-----------");
+        for(Course c: dc.getCourseList()) {
+            System.out.println(c);
+        }
+    }
+
+    public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
+        Student stud = dc.getStudentByUsername(username);
+        Course c = dc.getCourseByCode(courseCode);
+        Index oldIndex = dc.getCourseIndex(c, oldIndexNum);
+        Index newIndex = dc.getCourseIndex(c, newIndexNum);
+
+        // if student is indeed registered in the old index
+        if (stud.getRegistered().contains(oldIndex))
+            if (newIndex.getVacancies() > 0){
+                deregisterStudent(oldIndex, stud);
+                registerStudent(newIndex, stud);
+                FileManager.write_all(dc);
+                return "Index successfully changed!";
+            }
+            else
+                return "New index has no vacancies!";
+
+        return "You are not registered in that index!";
+    }
+
+    public boolean checkRegisteredIndex(String username, String courseCode, int indexNumber){
+        Student stud = dc.getStudentByUsername(username);
+        for (Index i : stud.getRegistered()){
+            if (i.getCourse().getCourse_code().equals(courseCode) && i.getIndex_number() == indexNumber){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

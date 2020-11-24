@@ -1,8 +1,8 @@
-package controllers;
+package Controller;
 
 import FileManager.DataContainer;
-import model.Staff;
-import model.Student;
+import Model.Staff;
+import Model.Student;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public class LoginController {
-    private DataContainer dc;
+    private final DataContainer dc;
 
     public LoginController(DataContainer dc){
         this.dc = dc;
