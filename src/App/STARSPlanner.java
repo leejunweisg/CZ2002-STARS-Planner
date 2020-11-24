@@ -792,7 +792,6 @@ public class STARSPlanner {
         System.out.println("\n-> Registered/Waitlisted Courses");
         System.out.println(student_controller.displayStudentCourse(username));
     }
-    
 
     private void changeIndex(String username){
         System.out.println("\n-> Change Index");
@@ -824,7 +823,8 @@ public class STARSPlanner {
         }
         // new index number
 
-        student_controller.printAllCourses();
+        student_controller.printAllIndexByCourse(courseCode);
+
         while(true) {
             System.out.print("Enter New Index Number: ");
 
