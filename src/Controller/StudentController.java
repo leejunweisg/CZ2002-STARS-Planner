@@ -283,5 +283,17 @@ public class StudentController {
         return false;
     }
 
+    public void printAllIndexByCourse(String courseCode){
+        System.out.println("-----------Index Of Course-----------");
+        Course c = dc.getCourseByCode(courseCode);
+        System.out.println("Course: " + c.getCourse_code() + " " + c.getCourse_name());
+        System.out.print("Index: ");
+        for(int i = 0; i<c.getIndexes().size(); i++) {
+            System.out.print(c.getIndexes().get(i).getIndex_number() + " ");
+        }
+        System.out.println(" \n");
+
+    }
+
 
 }
