@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
-import FileManager.DataContainer;
-import FileManager.FileManager;
-import Model.*;
+import filemanager.DataContainer;
+import filemanager.FileManager;
+import model.*;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

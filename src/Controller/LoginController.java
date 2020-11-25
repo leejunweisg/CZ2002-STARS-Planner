@@ -1,8 +1,8 @@
-package Controller;
+package controller;
 
-import FileManager.DataContainer;
-import Model.Staff;
-import Model.Student;
+import filemanager.DataContainer;
+import model.Staff;
+import model.Student;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

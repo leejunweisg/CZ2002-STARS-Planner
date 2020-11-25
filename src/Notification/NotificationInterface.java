@@ -1,4 +1,4 @@
-package Notification;
+package notification;
 
 /**
  * The Notification Interface that defines the methods for each Notification medium class that implements this interface.

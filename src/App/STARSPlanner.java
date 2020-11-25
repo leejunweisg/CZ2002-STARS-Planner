@@ -1,10 +1,10 @@
-package App;
+package app;
 
-import FileManager.DataContainer;
-import FileManager.FileManager;
-import Controller.LoginController;
-import Controller.StaffController;
-import Controller.StudentController;
+import filemanager.DataContainer;
+import filemanager.FileManager;
+import controller.LoginController;
+import controller.StaffController;
+import controller.StudentController;
 
 import java.io.Console;
 import java.time.LocalDate;

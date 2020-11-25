@@ -1,13 +1,13 @@
-package Controller;
+package controller;
 
-import FileManager.DataContainer;
-import FileManager.FileManager;
-import Notification.Email;
-import Notification.NotificationInterface;
-import Model.Course;
-import Model.Index;
-import Model.Student;
-import Model.TimeSlot;
+import filemanager.DataContainer;
+import filemanager.FileManager;
+import notification.Email;
+import notification.NotificationInterface;
+import model.Course;
+import model.Index;
+import model.Student;
+import model.TimeSlot;
 import java.util.ArrayList;
 
 /**

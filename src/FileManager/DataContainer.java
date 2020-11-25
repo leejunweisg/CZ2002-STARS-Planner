@@ -1,6 +1,6 @@
-package FileManager;
+package filemanager;
 
-import Model.*;
+import model.*;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
