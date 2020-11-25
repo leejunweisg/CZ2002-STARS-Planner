@@ -5,5 +5,13 @@ package model;
  * Contains all the valid gender options
  */
 public enum Gender {
-    M, F;
+    /**
+     * Male
+     */
+    M,
+
+    /**
+     * Female
+     */
+    F;
 }

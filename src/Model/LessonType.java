@@ -5,7 +5,18 @@ package model;
  * Contains all the valid lesson types
  */
 public enum LessonType {
+    /**
+     * Lecture
+     */
     LEC,
+
+    /**
+     * Tutorial
+     */
     TUT,
+
+    /**
+     * Lab
+     */
     LAB;
 }

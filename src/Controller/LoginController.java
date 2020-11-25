@@ -13,6 +13,10 @@ import java.util.Arrays;
  * A controller that handles the login operations of this application.
  */
 public class LoginController {
+
+    /**
+     * The DataContainer object that contains the arraylists.
+     */
     private DataContainer dc;
 
     /**

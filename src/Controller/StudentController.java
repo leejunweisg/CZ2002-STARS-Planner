@@ -14,6 +14,9 @@ import java.util.ArrayList;
  * Controller to contain all the business logic for student-related functions.
  */
 public class StudentController {
+    /**
+     * The DataContainer object that contains the arraylists.
+     */
     private final DataContainer dc;
 
     /**
@@ -374,8 +377,8 @@ public class StudentController {
     }
 
     /**
-     *
-     * @param courseCode
+     * Prints all indexes in the course
+     * @param courseCode The course code
      */
     public void printAllIndexByCourse(String courseCode){
         System.out.println("-----------Index Of Course-----------");

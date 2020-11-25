@@ -7,11 +7,34 @@ import java.time.LocalDate;
  * Abstract class that represents a User account in the STARSPlanner system.
  */
 public abstract class User implements Serializable {
+    /**
+     * Username of the user
+     */
     private String username;
+
+    /**
+     * Password hash of the user
+     */
     private byte[] passwordHash;
+
+    /**
+     * Full name of the user
+     */
     private String fullname;
+
+    /**
+     * Gender of the user
+     */
     private Gender gender;
+
+    /**
+     * Nationality of the user
+     */
     private String nationality;
+
+    /**
+     * Date of birth of the user
+     */
     private LocalDate dob;
 
     /**

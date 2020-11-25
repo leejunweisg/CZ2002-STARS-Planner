@@ -8,13 +8,44 @@ import java.util.ArrayList;
  * Abstract class that represents a Student account in the STARSPlanner system.
  */
 public class Student extends User{
+    /**
+     * Matriculation number of the student
+     */
     private String matric_number;
+
+    /**
+     * Email of the student
+     */
+
     private String email;
+    /**
+     * Matriculation date of the student
+     */
     private LocalDate matriculation_date;
+
+    /**
+     * Start of access period of the student
+     */
     private LocalDateTime startPeriod;
+
+    /**
+     * End of access period of the student
+     */
     private LocalDateTime endPeriod;
+
+    /**
+     * Maximum allowable AUs limit of the student
+     */
     private int maximumAUs;
+
+    /**
+     * ArrayList of registered course Indexes of the student
+     */
     private ArrayList<Index> registered;
+
+    /**
+     * ArrayList of waitlisted course Indexes of the student
+     */
     private ArrayList<Index> waitlisted;
 
     /**

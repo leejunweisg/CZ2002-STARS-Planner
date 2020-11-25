@@ -18,6 +18,9 @@ import java.util.Scanner;
  */
 public class StaffController {
 
+    /**
+     * The DataContainer object that contains the arraylists.
+     */
     private final DataContainer dc;
 
     /**

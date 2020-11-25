@@ -14,14 +14,40 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * The Boundary class that interacts with the user.
+ */
 public class STARSPlanner {
 
+    /**
+     * The LoginController object
+     */
     private final LoginController login_controller;
+
+    /**
+     * The StudentController object
+     */
     private final StudentController student_controller;
+
+    /**
+     * The StaffController object
+     */
     private final StaffController staff_controller;
+
+    /**
+     * The DataContainer object
+     */
     private final DataContainer data_container;
+
+    /**
+     * The scanner object for user input
+     */
     private final Scanner sc = new Scanner(System.in);
 
+    /**
+     * The constructor.
+     * Instantiates the DataContainer object and the various controllers
+     */
     public STARSPlanner() {
         data_container = FileManager.read_all();
         login_controller = new LoginController(data_container);

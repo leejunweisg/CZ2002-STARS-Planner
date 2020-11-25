@@ -6,6 +6,9 @@ import java.time.LocalDate;
  * Abstract class that represents a Staff account in the STARSPlanner system.
  */
 public class Staff extends User{
+    /**
+     * Staff number of the staff
+     */
     private String staff_number;
 
     /**
