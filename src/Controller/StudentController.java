@@ -18,7 +18,7 @@ public class StudentController {
 
     /**
      * The constructor.
-     * @param dc The DataContainer instance that contains the arraylists.
+     * @param dc The DataContainer object that contains the arraylists.
      */
     public StudentController(DataContainer dc) {
         this.dc = dc;

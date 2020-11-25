@@ -16,7 +16,6 @@ import java.util.regex.Pattern;
 
 public class STARSPlanner {
 
-
     private final LoginController login_controller;
     private final StudentController student_controller;
     private final StaffController staff_controller;
@@ -30,6 +29,10 @@ public class STARSPlanner {
         staff_controller = new StaffController(data_container);
     }
 
+    /**
+     * Starts the UI of STARSPlanner
+     * Prompts for the user to login.
+     */
     public void run() {
         int status = 0;
         do {
@@ -71,6 +74,11 @@ public class STARSPlanner {
     }
 //---------------------------- ADMIN MENU ----------------------------//
 
+    /**
+     * Displays the menu for staff users.
+     * Gets input from the user and calls the respective methods for the selected option.
+     * @param username The username of the logged in staff.
+     */
     private void adminMenu(String username) {
         int choice=-1;
         do{
@@ -86,6 +94,7 @@ public class STARSPlanner {
             System.out.println("0. Log out");
             System.out.println("----------------------------------------------------");
             System.out.print("Enter choice: ");
+
             try {
                 choice = Integer.parseInt(sc.nextLine());
             }catch(Exception e){
@@ -106,10 +115,18 @@ public class STARSPlanner {
             }
         }while(choice !=0);
     }
+
+    /**
+     * Displays logged out message.
+     */
     private void logOut(){
         System.out.println("Log out successful!");
     }
 
+    /**
+     * Displays the prompts for adding a new student.
+     * Called by the adminMenu() method.
+     */
     private void addStudent(){
         System.out.println("\n-> Add a new Student");
         String username, password, fullname, gender, nationality, dob, matric_number, matriculation_date, email;
@@ -237,6 +254,10 @@ public class STARSPlanner {
                 matric_number, matriculation_date, email));
     }
 
+    /**
+     * Displays the prompts for editing student access period.
+     * Called by the adminMenu() method.
+     */
     private void editStudentAccess(){
         System.out.println("\n-> Edit student access period");
         String matric_number, startPeriod, endPeriod;
@@ -289,6 +310,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.setStudentAccess(matric_number, startPeriod, endPeriod));
     }
 
+    /**
+     * Displays the prompts for creating a new course.
+     * Called by the adminMenu() method.
+     */
     private void createCourse(){
         System.out.println("\n-> Create Course");
 
@@ -349,6 +374,10 @@ public class STARSPlanner {
         staff_controller.printAddedCourses();
     }
 
+    /**
+     * Displays the sub-menu for updating a course.
+     * Called by the adminMenu() method.
+     */
     private void updateCourse(){
         int choice=-1;
         do{
@@ -380,6 +409,10 @@ public class STARSPlanner {
         }while(choice !=0);
     }
 
+    /**
+     * Displays the prompts for updating a course code.
+     * Called by the updateCourse() method.
+     */
     private void updateCourseCode(){
         staff_controller.printAddedCourses();
         String oldCode, newCode;
@@ -409,6 +442,10 @@ public class STARSPlanner {
 
     }
 
+    /**
+     * Displays the prompts for updating a course name.
+     * Called by the updateCourse() method.
+     */
     private void updateCourseName(){
         staff_controller.printAddedCourses();
         String courseCode, newName;
@@ -430,6 +467,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.changeCourseName(courseCode, newName));
     }
 
+    /**
+     * Displays the prompts for creating a course Index.
+     * Called by the updateCourse() method.
+     */
     private void createIndex(){
         System.out.println("\n-> Create Index and Add to a Course");
         staff_controller.printAddedCourses();
@@ -481,6 +522,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.createIndex(courseCode,indexNumber,maxCapacity));
     }
 
+    /**
+     * Displays the prompts for removing a course code.
+     * Called by the updateCourse() method.
+     */
     private void removeIndex(){
         System.out.println("\n-> Remove Index from a Course");
         staff_controller.printAllCourses();
@@ -499,6 +544,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.removeIndex(courseCode, indexNumber));
     }
 
+    /**
+     * Displays the prompts for adding a lesson to a course Index.
+     * Called by the updateCourse() method.
+     */
     private void addLessons(){
         System.out.println("\n-> Add Lessons to an Index");
         staff_controller.printAllCourses();
@@ -613,6 +662,10 @@ public class STARSPlanner {
         }
     }
 
+    /**
+     * Displays the prompts for removing a lesson to a course Index.
+     * Called by the updateCourse() method.
+     */
     private void removeLessons(){
         System.out.println("-> Remove Lesson from Index");
         staff_controller.printAllCourses();
@@ -634,6 +687,10 @@ public class STARSPlanner {
             staff_controller.printAllIndex(courseCode,indexNumber);
     }
 
+    /**
+     * Displays the prompts for checking vacancies of a course Index.
+     * Called by the adminMenu() and studentMenu() methods.
+     */
     private void checkIndexSlots(){
         System.out.println("\n-> Check available slot for an index number");
         staff_controller.printAllCourses();
@@ -651,6 +708,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.checkIndexSlot(courseCode,indexNumber));
     }
 
+    /**
+     * Displays the prompts for viewing students of a course Index.
+     * Called by the adminMenu() method.
+     */
     private void printByIndex() {
         System.out.println("\n-> Print Student list by index number");
         staff_controller.printAllCourses();
@@ -669,6 +730,10 @@ public class STARSPlanner {
         System.out.println(staff_controller.printByIndex(courseCode, indexNumber));
     }
 
+    /**
+     * Displays the prompts for viewing students of a course.
+     * Called by the adminMenu() method.
+     */
     private void printByCourse(){
         System.out.println("\n-> Print Student list by Course");
         staff_controller.printAllCourses();
@@ -683,6 +748,11 @@ public class STARSPlanner {
     }
 
 //---------------------------- STUDENT MENU ----------------------------//
+    /**
+     * Displays the menu for student users.
+     * Gets input from the user and calls the respective methods for the selected option.
+     * @param username The username of the logged in student.
+     */
     private void studentMenu(String username){
         int choice=-1;
         do{
@@ -717,6 +787,11 @@ public class STARSPlanner {
         }while(choice !=0);
     }
 
+    /**
+     * Displays the prompts for registering a course.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void registerForCourse(String username){
         System.out.println("\n-> Register For a Course");
 
@@ -736,6 +811,11 @@ public class STARSPlanner {
         System.out.println(student_controller.registerForCourse(username, courseCode,indexNumber));
     }
 
+    /**
+     * Displays the prompts for dropping a registered course.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void dropRegisteredCourse(String username){
         System.out.println("\n-> Drop a Registered Course");
         while (true) {
@@ -764,6 +844,11 @@ public class STARSPlanner {
 
     }
 
+    /**
+     * Displays the prompts for dropping a waitlisted course.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void dropWaitlistedCourse(String username){
         System.out.println("\n-> Drop a Waitlisted Course");
         while(true) {
@@ -788,11 +873,21 @@ public class STARSPlanner {
         }
     }
 
+    /**
+     * Displays the registered courses of the student.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void displayStudentCourse(String username){
         System.out.println("\n-> Registered/Waitlisted Courses");
         System.out.println(student_controller.displayStudentCourse(username));
     }
 
+    /**
+     * Displays the prompts for changing the index of a registered course.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void changeIndex(String username){
         System.out.println("\n-> Change Index");
         System.out.println("----------Registered Courses----------");
@@ -850,6 +945,11 @@ public class STARSPlanner {
         System.out.println(student_controller.changeIndex(username, courseCode, oldIndexNumber, newIndexNumber));
     }
 
+    /**
+     * Displays the prompts for swapping an index of a registered course.
+     * Called by the studentMenu() method.
+     * @param username The username of the logged in student.
+     */
     private void swapIndex(String username){
         System.out.println("\n-> Swap Index Number with Another Student");
 
@@ -922,6 +1022,10 @@ public class STARSPlanner {
         System.out.println(student_controller.swapIndex(username, username2,courseCode, oldIndexNumber,newIndexNumber ));
     }
 
+    /**
+     * Prompts the user to input a valid and existing course code.
+     * @return Returns the valid course code entered.
+     */
     private String inputCourseCode(){
         String courseCode;
         while (true){
@@ -942,6 +1046,11 @@ public class STARSPlanner {
         }
     }
 
+    /**
+     * Prompts the user to input a valid and existing index number of the course.
+     * @param courseCode The course code.
+     * @return Returns the valid index number entered.
+     */
     private int inputIndex(String courseCode){
         int indexNumber;
         while(true) {
