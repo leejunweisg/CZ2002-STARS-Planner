@@ -4,8 +4,18 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
+/**
+ * The Email class that handles the sending of notifications via email.
+ */
 public class Email implements NotificationInterface{
 
+    /**
+     * Sends a notification via email.
+     * @param title The title of the email.
+     * @param body The body of the email.
+     * @param email The recipient email address.
+     * @return Returns true if successfully sent, else false.
+     */
     @Override
     public boolean sendNotification(String title, String body, String email){
         final String username = "donotreply.starsntu@gmail.com";

@@ -9,13 +9,29 @@ import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+/**
+ * A controller that handles the login operations of this application.
+ */
 public class LoginController {
-    private final DataContainer dc;
+    private DataContainer dc;
 
+    /**
+     * The constructor.
+     * @param dc The DataContainer object that holds the application's existing records.
+     */
     public LoginController(DataContainer dc){
         this.dc = dc;
     }
 
+    /**
+     * Checks the validity of a username/password combination.
+     * @param username The username to be authenticated.
+     * @param password The password to be authenticated.
+     * @return 1 if the username/password combination matches a staff record,
+     *         2 if the username/password combination matches a student record within his/her allocated access period,
+     *         3 if the username/password combination matches a student record outside his/her allocated access period,
+     *         0 if the username/password does not match any record.
+     */
     public int authenticate(String username, String password){
 
         for (Staff s : dc.getStaffList())
@@ -33,6 +49,11 @@ public class LoginController {
         return 0;
     }
 
+    /**
+     * Uses a hash function to translate a password into an hashed output for security reasons.
+     * @param passwordStr The password string to be hashed.
+     * @return The hashed representation of the password.
+     */
     private byte[] hash(String passwordStr){
         byte[] digest=null;
         try {
