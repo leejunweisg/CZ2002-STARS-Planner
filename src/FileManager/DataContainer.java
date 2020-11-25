@@ -9,11 +9,27 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+/**
+ * A data container class that holds three arraylists for Staff, Student and Course objects.
+ * Also contains helper methods, useful for validation.
+ */
 public class DataContainer implements Serializable {
+    /**
+     * ArrayList to hold Staff objects.
+     */
     private ArrayList<Staff> staffList;
+    /**
+     * ArrayList to hold Student objects.
+     */
     private ArrayList<Student> studentList;
+    /**
+     * ArrayList to hold Course objects.
+     */
     private ArrayList<Course> courseList;
 
+    /**
+     * The constructor.
+     */
     public DataContainer(){
         System.out.println("Hardcoded DC created");
         staffList = new ArrayList<Staff>();
@@ -23,18 +39,33 @@ public class DataContainer implements Serializable {
         hardcode();
     }
 
+    /**
+     * Gets the Staff ArrayList
+     * @return Arraylist of Staff objects
+     */
     public ArrayList<Staff> getStaffList() {
         return staffList;
     }
 
+    /**
+     * Gets the Student ArrayList
+     * @return Arraylist of Student objects
+     */
     public ArrayList<Student> getStudentList() {
         return studentList;
     }
 
+    /**
+     * Gets the Course ArrayList
+     * @return Arraylist of Course objects
+     */
     public ArrayList<Course> getCourseList() {
         return courseList;
     }
 
+    /**
+     * Hardcodes default data into the arraylists
+     */
     private void hardcode(){
         // hardcoded staffs
         Staff s1 = new Staff("LILYLEE", hash("password123"), "Lily Lee", Gender.F,
@@ -227,6 +258,12 @@ public class DataContainer implements Serializable {
     }
 
     // validation methods to be used from the UI
+
+    /**
+     * Checks if an username exists.
+     * @param username The username to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existUsername(String username){
         // read latest students from file
         for (Student stud: studentList)
@@ -239,6 +276,11 @@ public class DataContainer implements Serializable {
         return false;
     }
 
+    /**
+     * Checks if a matriculation number exists.
+     * @param matric_number The matriculation number to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existMatricNumber(String matric_number){
         // read latest students from file
         for (Student stud: studentList)
@@ -248,6 +290,11 @@ public class DataContainer implements Serializable {
         return false;
     }
 
+    /**
+     * Checks if a school exists.
+     * @param school The school to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existSchool(String school){
         try{
             School.valueOf(school);
@@ -257,6 +304,11 @@ public class DataContainer implements Serializable {
         return true;
     }
 
+    /**
+     * Checks if a course with the course code exists.
+     * @param courseCode The course code to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existCourse(String courseCode){
         for (Course c: courseList){
             if (c.getCourse_code().equals(courseCode.toUpperCase()))
@@ -265,6 +317,12 @@ public class DataContainer implements Serializable {
         return false;
     }
 
+    /**
+     * Checks if a course Index exists in a course.
+     * @param courseCode The course code to check.
+     * @param indexNumber The index number to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existIndexInCourse(String courseCode, int indexNumber){
         Course c = getCourseByCode(courseCode);
         for (Index i:c.getIndexes())
@@ -273,6 +331,11 @@ public class DataContainer implements Serializable {
         return false;
     }
 
+    /**
+     * Checks if an email exists.
+     * @param email The email to check.
+     * @return Returns true if exists, else false.
+     */
     public boolean existEmail(String email){
         for (Student stud: studentList)
             if (stud.getEmail().toUpperCase().equals(email.toUpperCase()))
@@ -281,6 +344,12 @@ public class DataContainer implements Serializable {
     }
 
     // helper methods
+
+    /**
+     * Get the Student object with the matriculation number.
+     * @param matric The matriculation number.
+     * @return Returns the Student object.
+     */
     public Student getStudentByMatric(String matric){
         for (Student stud: studentList)
             if (stud.getMatric_number().equals(matric))
@@ -288,6 +357,11 @@ public class DataContainer implements Serializable {
         return null;
     }
 
+    /**
+     * Get the Course object with the course code.
+     * @param courseCode The course code.
+     * @return Returns the Course object.
+     */
     public Course getCourseByCode(String courseCode){
         for(Course course: courseList)
         {
@@ -297,6 +371,12 @@ public class DataContainer implements Serializable {
         return null;
     }
 
+    /**
+     * Get the course Index of a course with the index number.
+     * @param c The Course object.
+     * @param indexNumber The index number.
+     * @return Returns the Index object.
+     */
     public Index getCourseIndex(Course c, int indexNumber){
         for (Index i: c.getIndexes()){
             if (i.getIndex_number() == indexNumber)
@@ -305,6 +385,11 @@ public class DataContainer implements Serializable {
         return null;
     }
 
+    /**
+     * Get the Student object with the username.
+     * @param username The student's username.
+     * @return Returns the Student object.
+     */
     public Student getStudentByUsername(String username){
         for (Student stud: studentList)
             if (stud.getUsername().equals(username))
@@ -312,6 +397,11 @@ public class DataContainer implements Serializable {
         return null;
     }
 
+    /**
+     * Hashes a string using SHA-256.
+     * @param passwordStr The password string.
+     * @return Returns the hash in a byte array.
+     */
     private byte[] hash(String passwordStr){
         byte[] digest=null;
         try {

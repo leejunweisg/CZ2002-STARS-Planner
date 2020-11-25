@@ -8,17 +8,29 @@ import Model.Course;
 import Model.Index;
 import Model.Student;
 import Model.TimeSlot;
-
 import java.util.ArrayList;
 
-
+/**
+ * Controller to contain all the business logic for student-related functions.
+ */
 public class StudentController {
     private final DataContainer dc;
 
+    /**
+     * The constructor.
+     * @param dc The DataContainer instance that contains the arraylists.
+     */
     public StudentController(DataContainer dc) {
         this.dc = dc;
     }
 
+    /**
+     * Registers a student into an index of a particular course.
+     * @param username The student's username.
+     * @param courseCode The course code.
+     * @param indexNumber The index number in the course.
+     * @return Returns a success/error message.
+     */
     public String registerForCourse(String username, String courseCode, int indexNumber){
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
@@ -69,6 +81,13 @@ public class StudentController {
         }
     }
 
+    /**
+     * Drop a registered course index for a student.
+     * @param username The student's username.
+     * @param courseCode The course code.
+     * @param indexNumber The index number in the course.
+     * @return Returns a success/error message.
+     */
     public String dropRegisteredCourse(String username, String courseCode, int indexNumber){
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
@@ -84,6 +103,13 @@ public class StudentController {
         }
     }
 
+    /**
+     * Drop a waitlisted course index for a student.
+     * @param username The student's username.
+     * @param courseCode The course code.
+     * @param indexNumber The index number in the course.
+     * @return Returns a success/error message.
+     */
     public String dropWaitlistedCourse(String username, String courseCode, int indexNumber){
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
@@ -104,6 +130,11 @@ public class StudentController {
         }
     }
 
+    /**
+     * Returns all registered/waitlisted courses for a student.
+     * @param username The student's username.
+     * @return Returns a string with all registered/waitlisted courses and indexes.
+     */
     public String displayStudentCourse(String username){
         Student stud = dc.getStudentByUsername(username);
 
@@ -126,6 +157,11 @@ public class StudentController {
         return sb.toString();
     }
 
+    /**
+     * Returns all waitlisted courses for a student.
+     * @param username The student's username.
+     * @return Returns a string with all waitlisted courses and indexes.
+     */
     public String printWaitListedCourse(String username){
         Student stud = dc.getStudentByUsername(username);
 
@@ -142,6 +178,11 @@ public class StudentController {
 
     }
 
+    /**
+     * Returns all registered courses for a student.
+     * @param username The student's username.
+     * @return Returns a string with all registered courses and indexes.
+     */
     public String printRegisteredCourse(String username){
         Student stud = dc.getStudentByUsername(username);
 
@@ -157,6 +198,11 @@ public class StudentController {
 
     }
 
+    /**
+     * De-register a student from a course index
+     * @param i The course Index.
+     * @param stud The Student.
+     */
     private void deregisterStudent(Index i, Student stud){
         // remove student from index
         i.getEnrolledStudents().remove(stud);
@@ -183,11 +229,25 @@ public class StudentController {
         }
     }
 
+    /**
+     * Register a student to a course index
+     * @param i The course Index.
+     * @param stud The Student.
+     */
     private void registerStudent(Index i, Student stud){
         i.getEnrolledStudents().add(stud);
         stud.getRegistered().add(i);
     }
 
+    /**
+     * Swaps the index between two students.
+     * @param username1 The first student's username.
+     * @param username2 The second student's username.
+     * @param courseCode The course code.
+     * @param oldIndexNum The first student's index number.
+     * @param newIndexNum The second student's index number.
+     * @return Returns a success/error message.
+     */
     public String swapIndex(String username1, String username2, String courseCode, int oldIndexNum, int newIndexNum){
         Student stud1 = dc.getStudentByUsername(username1);
         Student stud2 = dc.getStudentByUsername(username2);
@@ -230,6 +290,12 @@ public class StudentController {
         return "Index successfully swapped!";
     }
 
+    /**
+     * Checks if two course Indexes contains lessons with time clash.
+     * @param i1 The first course Index
+     * @param i2 The second course Index
+     * @return Returns true if clash is detected, else false.
+     */
     private boolean indexClashed(Index i1, Index i2){
         ArrayList<TimeSlot> ts_list1 = i1.getAllSlots();
         ArrayList<TimeSlot> ts_list2 = i2.getAllSlots();
@@ -242,10 +308,19 @@ public class StudentController {
         return false;
     }
 
+    /**
+     * Checks if two TimeSlots have a time clash.
+     * @param ts1 The first TimeSlot.
+     * @param ts2 The second TimeSlot.
+     * @return Returns true if clash is detected, else false.
+     */
     private boolean timeslotClashed(TimeSlot ts1, TimeSlot ts2){
         return ts1.getDayOfWeek() == ts2.getDayOfWeek() && ts1.getStartTime().isBefore(ts2.getEndTime()) && ts2.getStartTime().isBefore(ts1.getEndTime());
     }
 
+    /**
+     * Prints all courses.
+     */
     public void printAllCourses(){
         System.out.println("-----------All Courses-----------");
         for(Course c: dc.getCourseList()) {
@@ -253,6 +328,14 @@ public class StudentController {
         }
     }
 
+    /**
+     * Change the index of a registered course index for a student.
+     * @param username The student's username.
+     * @param courseCode The course code.
+     * @param oldIndexNum The old index number.
+     * @param newIndexNum The new index number.
+     * @return Returns a success/error message.
+     */
     public String changeIndex(String username, String courseCode, int oldIndexNum, int newIndexNum) {
         Student stud = dc.getStudentByUsername(username);
         Course c = dc.getCourseByCode(courseCode);
@@ -273,6 +356,13 @@ public class StudentController {
         return "You are not registered in that index!";
     }
 
+    /**
+     * Checks if a student is registered in a course Index.
+     * @param username The student's username.
+     * @param courseCode The course code.
+     * @param indexNumber The index number in the course.
+     * @return Returns true if the student is registered in that course Index, else false.
+     */
     public boolean checkRegisteredIndex(String username, String courseCode, int indexNumber){
         Student stud = dc.getStudentByUsername(username);
         for (Index i : stud.getRegistered()){
@@ -283,6 +373,10 @@ public class StudentController {
         return false;
     }
 
+    /**
+     *
+     * @param courseCode
+     */
     public void printAllIndexByCourse(String courseCode){
         System.out.println("-----------Index Of Course-----------");
         Course c = dc.getCourseByCode(courseCode);
